@@ -83,7 +83,13 @@ func (g *HugoGenerator) GenerateContent() error {
 		var scores score.LinkScores
 
 		genContent.Title = source.Title().Clean()
-		genContent.Summary = source.Summary()
+
+		desc, ok := source.Summary().OpenGraphDescription()
+		if ok {
+			genContent.Summary = desc
+		} else {
+			genContent.Summary = source.Summary().Original()
+		}
 		genContent.Body = source.Body()
 		genContent.Categories = source.Categories()
 		genContent.CreatedOn = HugoContentTime(source.CreatedOn())
