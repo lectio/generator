@@ -12,6 +12,7 @@ import (
 	"github.com/lectio/content"
 	"github.com/lectio/harvester"
 	"github.com/lectio/score"
+	"gopkg.in/cheggaaa/pb.v1"
 )
 
 // HugoGenerator is the primary Hugo content generator engine
@@ -19,7 +20,7 @@ type HugoGenerator struct {
 	collection                         content.Collection
 	destinationPath                    string
 	simulateSocialScores               bool
-	printFileNameAsGenerated           bool
+	verbose                            bool
 	itemsInCollectionCount             int
 	itemsGeneratedCount                int
 	itemsWithFacebookGraphInvalidCount int
@@ -52,12 +53,12 @@ type HugoContent struct {
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
-func NewHugoGenerator(collection content.Collection, destinationPath string, printFileNameAsGenerated bool, simulateSocialScores bool) *HugoGenerator {
+func NewHugoGenerator(collection content.Collection, destinationPath string, verbose bool, simulateSocialScores bool) *HugoGenerator {
 	result := new(HugoGenerator)
 	result.collection = collection
 	result.destinationPath = destinationPath
 	result.simulateSocialScores = simulateSocialScores
-	result.printFileNameAsGenerated = printFileNameAsGenerated
+	result.verbose = verbose
 	return result
 }
 
@@ -77,6 +78,11 @@ func (g HugoGenerator) GetActivitySummary() string {
 func (g *HugoGenerator) GenerateContent() error {
 	items := g.collection.Content()
 	g.itemsInCollectionCount = len(items)
+	var bar *pb.ProgressBar
+	if g.verbose {
+		bar = pb.StartNew(g.itemsInCollectionCount)
+		bar.ShowCounters = true
+	}
 	for i := 0; i < len(items); i++ {
 		source := items[i]
 		var genContent HugoContent
@@ -120,14 +126,17 @@ func (g *HugoGenerator) GenerateContent() error {
 			fmt.Printf("I don't know about type %T!\n", v)
 		}
 
-		fileName, err := genContent.createFile(g)
+		_, err := genContent.createFile(g)
 		if err != nil {
 			panic(err)
 		}
 		g.itemsGeneratedCount++
-		if g.printFileNameAsGenerated {
-			fmt.Printf("File %d of %d: %s\n", g.itemsGeneratedCount, g.itemsInCollectionCount, fileName)
+		if g.verbose {
+			bar.Increment()
 		}
+	}
+	if g.verbose {
+		bar.FinishPrint(fmt.Sprintf("Completed generating %d Hugo items from %q", g.itemsGeneratedCount, g.collection.Source()))
 	}
 
 	return nil
