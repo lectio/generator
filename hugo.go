@@ -94,7 +94,12 @@ func (g *HugoGenerator) GenerateContent() error {
 		if ok {
 			genContent.Summary = desc
 		} else {
-			genContent.Summary = source.Summary().Original()
+			firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
+			if fsErr == nil {
+				genContent.Summary = firstSentence
+			} else {
+				genContent.Summary = source.Summary().Original()
+			}
 		}
 		genContent.Body = source.Body()
 		genContent.Categories = source.Categories()
