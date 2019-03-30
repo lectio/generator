@@ -88,11 +88,16 @@ func (g *HugoGenerator) GenerateContent() error {
 		var genContent HugoContent
 		var scores score.LinkScores
 
-		genContent.Title = source.Title().Clean()
-
-		desc, ok := source.Summary().OpenGraphDescription()
+		ogTitle, ok := source.Title().OpenGraphTitle()
 		if ok {
-			genContent.Summary = desc
+			genContent.Title = ogTitle
+		} else {
+			genContent.Title = source.Title().Clean()
+		}
+
+		ogDescr, ok := source.Summary().OpenGraphDescription()
+		if ok {
+			genContent.Summary = ogDescr
 		} else {
 			firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
 			if fsErr == nil {
