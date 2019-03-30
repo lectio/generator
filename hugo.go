@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/gosimple/slug"
+	"github.com/hashicorp/go-multierror"
 	"github.com/lectio/content"
 	"github.com/lectio/harvester"
 	"github.com/lectio/score"
@@ -25,6 +26,7 @@ type HugoGenerator struct {
 	itemsGeneratedCount                int
 	itemsWithFacebookGraphInvalidCount int
 	itemsWithLinkedInGraphInvalidCount int
+	errors                             *multierror.Error
 }
 
 // HugoContentTime is a convenience type for storing content timestamp
@@ -60,6 +62,11 @@ func NewHugoGenerator(collection content.Collection, destinationPath string, ver
 	result.simulateSocialScores = simulateSocialScores
 	result.verbose = verbose
 	return result
+}
+
+// Errors records any issues with the generator as its processing its entries
+func (g HugoGenerator) Errors() error {
+	return g.errors
 }
 
 // GetContentFilename returns the name of the file a given piece of HugoContent
@@ -116,6 +123,10 @@ func (g *HugoGenerator) GenerateContent() error {
 		switch v := source.(type) {
 		case content.CuratedLink:
 			url := v.Target()
+			if url == nil {
+				g.errors = multierror.Append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil Target(): %+v", i, source))
+				continue
+			}
 			scores = score.GetLinkScores(url, score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
 			genContent.Link = url.String()
 			genContent.Source = harvester.GetSimplifiedHostname(url)
@@ -138,7 +149,7 @@ func (g *HugoGenerator) GenerateContent() error {
 
 		_, err := genContent.createFile(g)
 		if err != nil {
-			panic(err)
+			g.errors = multierror.Append(g.errors, fmt.Errorf("error writing item %d in HugoGenerator: %+v", i, err))
 		}
 		g.itemsGeneratedCount++
 		if g.verbose {
