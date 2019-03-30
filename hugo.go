@@ -124,7 +124,7 @@ func (g *HugoGenerator) GenerateContent() error {
 		case content.CuratedLink:
 			url := v.Target()
 			if url == nil {
-				g.errors = multierror.Append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil Target(): %+v", i, source))
+				g.errors = multierror.Append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil Target()", i))
 				continue
 			}
 			scores = score.GetLinkScores(url, score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
