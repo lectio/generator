@@ -9,9 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/gosimple/slug"
-	"github.com/hashicorp/go-multierror"
 	"github.com/lectio/content"
-	"github.com/lectio/harvester"
 	"github.com/lectio/score"
 	"gopkg.in/cheggaaa/pb.v1"
 )
@@ -26,7 +24,7 @@ type HugoGenerator struct {
 	itemsGeneratedCount                int
 	itemsWithFacebookGraphInvalidCount int
 	itemsWithLinkedInGraphInvalidCount int
-	errors                             *multierror.Error
+	errors                             []error
 }
 
 // HugoContentTime is a convenience type for storing content timestamp
@@ -65,7 +63,7 @@ func NewHugoGenerator(collection content.Collection, destinationPath string, ver
 }
 
 // Errors records any issues with the generator as its processing its entries
-func (g HugoGenerator) Errors() *multierror.Error {
+func (g HugoGenerator) Errors() []error {
 	return g.errors
 }
 
@@ -121,16 +119,17 @@ func (g *HugoGenerator) GenerateContent() error {
 		}
 
 		switch v := source.(type) {
-		case content.CuratedLink:
-			url := v.Target()
-			if url == nil {
-				g.errors = multierror.Append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil Target()", i))
+		case content.CuratedContent:
+			resource := v.TargetResource()
+			if resource == nil {
+				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil TargetResource()", i))
 				continue
 			}
-			scores = score.GetLinkScores(url, score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
-			genContent.Link = url.String()
-			genContent.Source = harvester.GetSimplifiedHostname(url)
-			genContent.Slug = slug.Make(harvester.GetSimplifiedHostnameWithoutTLD(url) + "-" + source.Title().Clean())
+			finalURL, _, _ := resource.GetURLs()
+			scores = score.GetLinkScores(finalURL, score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
+			genContent.Link = finalURL.String()
+			genContent.Source = content.GetSimplifiedHostname(finalURL)
+			genContent.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
 			genContent.TotalSharesCount = scores.TotalSharesCount()
 			genContent.FacebookGraph = scores.FacebookGraph()
 			genContent.LinkedInGraph = scores.LinkedInCount()
@@ -149,7 +148,7 @@ func (g *HugoGenerator) GenerateContent() error {
 
 		_, err := genContent.createFile(g)
 		if err != nil {
-			g.errors = multierror.Append(g.errors, fmt.Errorf("error writing item %d in HugoGenerator: %+v", i, err))
+			g.errors = append(g.errors, fmt.Errorf("error writing item %d in HugoGenerator: %+v", i, err))
 		}
 		g.itemsGeneratedCount++
 		if g.verbose {
