@@ -126,6 +126,10 @@ func (g *HugoGenerator) GenerateContent() error {
 				continue
 			}
 			finalURL, _, _ := resource.GetURLs()
+			if finalURL == nil || len(finalURL.String()) == 0 {
+				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is %q", i, finalURL))
+				continue
+			}
 			scores = score.GetLinkScores(finalURL, score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
 			genContent.Link = finalURL.String()
 			genContent.Source = content.GetSimplifiedHostname(finalURL)
