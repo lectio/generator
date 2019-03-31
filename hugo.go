@@ -17,9 +17,13 @@ import (
 // HugoGenerator is the primary Hugo content generator engine
 type HugoGenerator struct {
 	collection                         content.Collection
-	destinationPath                    string
+	homePath                           string
+	contentID                          string
+	contentPath                        string
+	scoresDataPath                     string
 	simulateSocialScores               bool
 	verbose                            bool
+	createDestPaths                    bool
 	itemsInCollectionCount             int
 	itemsGeneratedCount                int
 	itemsWithFacebookGraphInvalidCount int
@@ -53,13 +57,34 @@ type HugoContent struct {
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
-func NewHugoGenerator(collection content.Collection, destinationPath string, verbose bool, simulateSocialScores bool) *HugoGenerator {
+func NewHugoGenerator(collection content.Collection, homePath string, contentID string, createDestPaths bool, verbose bool, simulateSocialScores bool) (*HugoGenerator, error) {
 	result := new(HugoGenerator)
 	result.collection = collection
-	result.destinationPath = destinationPath
+	result.homePath = homePath
+	result.contentID = contentID
+	result.contentPath = filepath.Join(homePath, "content", contentID)
+	result.scoresDataPath = filepath.Join(homePath, "data", "scores", contentID)
 	result.simulateSocialScores = simulateSocialScores
 	result.verbose = verbose
-	return result
+	result.createDestPaths = createDestPaths
+
+	if createDestPaths {
+		if _, err := createDirIfNotExist(result.contentPath); err != nil {
+			return result, fmt.Errorf("Unable to create content path %q: %v", result.contentPath, err)
+		}
+		if _, err := createDirIfNotExist(result.scoresDataPath); err != nil {
+			return result, fmt.Errorf("Unable to create scores data path %q: %v", result.scoresDataPath, err)
+		}
+	}
+
+	if _, err := os.Stat(result.contentPath); os.IsNotExist(err) {
+		return result, fmt.Errorf("content path %q does not exist: %v", result.contentPath, err)
+	}
+	if _, err := os.Stat(result.scoresDataPath); os.IsNotExist(err) {
+		return result, fmt.Errorf("scores data path %q does not exist: %v", result.scoresDataPath, err)
+	}
+
+	return result, nil
 }
 
 // Errors records any issues with the generator as its processing its entries
@@ -69,13 +94,13 @@ func (g HugoGenerator) Errors() []error {
 
 // GetContentFilename returns the name of the file a given piece of HugoContent
 func (g HugoGenerator) GetContentFilename(gc *HugoContent) string {
-	return fmt.Sprintf("%s.md", filepath.Join(g.destinationPath, gc.Slug))
+	return fmt.Sprintf("%s.md", filepath.Join(g.contentPath, gc.Slug))
 }
 
 // GetActivitySummary returns a useful message about the activities that the engine performed
 func (g HugoGenerator) GetActivitySummary() string {
 	return fmt.Sprintf("Generated %d posts in %q from %d items read (%q), Simulating scores: %v, Facebook Graph errors: %d, LinkedIn Graph errors: %d",
-		g.itemsGeneratedCount, g.destinationPath, g.itemsInCollectionCount, g.collection.Source(),
+		g.itemsGeneratedCount, g.contentPath, g.itemsInCollectionCount, g.collection.Source(),
 		g.simulateSocialScores, g.itemsWithFacebookGraphInvalidCount, g.itemsWithLinkedInGraphInvalidCount)
 }
 
@@ -195,4 +220,14 @@ func (c *HugoContent) createFile(g *HugoGenerator) (string, error) {
 	}
 
 	return fileName, nil
+}
+
+// createDirIfNotExist creates a path if it does not exist. It is similar to mkdir -p in shell command,
+// which also creates parent directory if not exists.
+func createDirIfNotExist(dir string) (bool, error) {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0755)
+		return true, err
+	}
+	return false, nil
 }
