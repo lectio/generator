@@ -125,13 +125,14 @@ func (g *HugoGenerator) GenerateContent() error {
 				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil TargetResource()", i))
 				continue
 			}
-			finalURL, _, _ := resource.GetURLs()
-			if finalURL == nil {
-				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is nil", i))
+			isURLValid, isDestValid := resource.IsValid()
+			if !isURLValid || !isDestValid {
+				g.errors = append(g.errors, fmt.Errorf("skipping item %d due to invalid resource URL %q; isURLValid: %v, isDestValid: %v", i, resource.OriginalURLText(), isURLValid, isDestValid))
 				continue
 			}
-			if len(finalURL.String()) == 0 {
-				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is empty string", i))
+			finalURL, _, _ := resource.GetURLs()
+			if finalURL == nil || len(finalURL.String()) == 0 {
+				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is nil or empty string", i))
 				continue
 			}
 			scores = score.GetLinkScores(finalURL, score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
