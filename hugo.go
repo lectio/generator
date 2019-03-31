@@ -150,7 +150,7 @@ func (g *HugoGenerator) GenerateContent() error {
 			}
 
 		case content.Content:
-			genContent.Slug = source.Keys().Slug()
+			genContent.Slug = slug.Make(source.Title().Clean())
 		default:
 			fmt.Printf("I don't know about type %T!\n", v)
 		}
