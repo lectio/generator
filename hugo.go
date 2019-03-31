@@ -65,7 +65,7 @@ func NewHugoGenerator(collection content.Collection, destinationPath string, ver
 }
 
 // Errors records any issues with the generator as its processing its entries
-func (g HugoGenerator) Errors() error {
+func (g HugoGenerator) Errors() *multierror.Error {
 	return g.errors
 }
 
