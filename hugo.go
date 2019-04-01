@@ -182,8 +182,10 @@ func (g *HugoGenerator) GenerateContent() error {
 			bar.Increment()
 		}
 
-		hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.FacebookLinkScore())
-		hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.LinkedInLinkScore())
+		if hugoContent.scores != nil {
+			hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.FacebookLinkScore())
+			hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.LinkedInLinkScore())
+		}
 	}
 	if g.verbose {
 		bar.FinishPrint(fmt.Sprintf("Completed generating Hugo items from %q", g.collection.Source()))
