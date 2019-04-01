@@ -128,7 +128,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 	result.Body = source.Body()
 	result.Categories = source.Categories()
 	result.CreatedOn = HugoContentTime(source.CreatedOn())
-	fmt.Printf("> %v %v\n", source.CreatedOn(), result.CreatedOn)
+	fmt.Printf("> %v ... %v\n", source.CreatedOn(), time.Time(result.CreatedOn).Format("Mon Jan 2 15:04:05 MST 2006"))
 	if source.FeaturedImage() != nil {
 		result.FeaturedImage = source.FeaturedImage().String()
 	}
