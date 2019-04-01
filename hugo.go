@@ -21,19 +21,15 @@ const linkedInCountErrorFileExtn = ".linkedin-error.json"
 
 // HugoGenerator is the primary Hugo content generator engine
 type HugoGenerator struct {
-	collection                         content.Collection
-	homePath                           string
-	contentID                          string
-	contentPath                        string
-	scoresDataPath                     string
-	simulateSocialScores               bool
-	verbose                            bool
-	createDestPaths                    bool
-	itemsInCollectionCount             int
-	itemsGeneratedCount                int
-	itemsWithFacebookGraphInvalidCount int
-	itemsWithLinkedInGraphInvalidCount int
-	errors                             []error
+	collection           content.Collection
+	homePath             string
+	contentID            string
+	contentPath          string
+	scoresDataPath       string
+	simulateSocialScores bool
+	verbose              bool
+	createDestPaths      bool
+	errors               []error
 }
 
 // HugoContentTime is a convenience type for storing content timestamp
@@ -47,19 +43,19 @@ func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
 
 // HugoContent is a single Hugo page/content
 type HugoContent struct {
-	Link              string                              `json:"link"`
-	Title             string                              `json:"title"`
-	Summary           string                              `json:"description"`
-	Body              string                              `json:"content"`
-	Categories        []string                            `json:"categories"`
-	CreatedOn         HugoContentTime                     `json:"date"`
-	FeaturedImage     string                              `json:"featuredimage"`
-	Source            string                              `json:"source"`
-	Slug              string                              `json:"slug"`
-	GloballyUniqueKey string                              `json:"uniquekey"`
-	TotalSharesCount  int                                 `json:"totalSharesCount"`
-	FacebookLinkScore *score.FacebookLinkScoreGraphResult `json:"fbgraph"`
-	LinkedInLinkScore *score.LinkedInLinkScoreResult      `json:"ligraph"`
+	Link              string          `json:"link,omitempty"`
+	Title             string          `json:"title"`
+	Summary           string          `json:"description"`
+	Body              string          `json:"content"`
+	Categories        []string        `json:"categories"`
+	CreatedOn         HugoContentTime `json:"date"`
+	FeaturedImage     string          `json:"featuredimage"`
+	Source            string          `json:"source"`
+	Slug              string          `json:"slug"`
+	GloballyUniqueKey string          `json:"uniquekey"`
+	TotalSharesCount  int             `json:"totalSharesCount"`
+
+	scores score.LinkScores
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
@@ -103,107 +99,108 @@ func (g HugoGenerator) GetContentFilename(gc *HugoContent) string {
 	return fmt.Sprintf("%s.md", filepath.Join(g.contentPath, gc.Slug))
 }
 
-// GetActivitySummary returns a useful message about the activities that the engine performed
-func (g HugoGenerator) GetActivitySummary() string {
-	return fmt.Sprintf("Generated %d posts in %q from %d items read (%q), Simulating scores: %v, Facebook Graph errors: %d, LinkedIn Graph errors: %d",
-		g.itemsGeneratedCount, g.contentPath, g.itemsInCollectionCount, g.collection.Source(),
-		g.simulateSocialScores, g.itemsWithFacebookGraphInvalidCount, g.itemsWithLinkedInGraphInvalidCount)
+// GetScoresDataFilename returns the name of the file a given piece of HugoContent
+func (g HugoGenerator) GetScoresDataFilename(gc *HugoContent, scoreSource string, isValid bool) string {
+	suffix := scoreSource
+	if !isValid {
+		suffix = scoreSource + "-error"
+	}
+	return fmt.Sprintf("%s.%s.json", filepath.Join(g.scoresDataPath, gc.GloballyUniqueKey), suffix)
+}
+
+func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Content) *HugoContent {
+	result := new(HugoContent)
+
+	ogTitle, ok := source.Title().OpenGraphTitle()
+	if ok {
+		result.Title = ogTitle
+	} else {
+		result.Title = source.Title().Clean()
+	}
+
+	ogDescr, ok := source.Summary().OpenGraphDescription()
+	if ok {
+		result.Summary = ogDescr
+	} else {
+		firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
+		if fsErr == nil {
+			result.Summary = firstSentence
+		} else {
+			result.Summary = source.Summary().Original()
+		}
+	}
+
+	result.Body = source.Body()
+	result.Categories = source.Categories()
+	result.CreatedOn = HugoContentTime(source.CreatedOn())
+	if source.FeaturedImage() != nil {
+		result.FeaturedImage = source.FeaturedImage().String()
+	}
+
+	switch v := source.(type) {
+	case content.CuratedContent:
+		resource := v.TargetResource()
+		if resource == nil {
+			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil TargetResource()", index))
+			return nil
+		}
+		isURLValid, isDestValid := resource.IsValid()
+		if !isURLValid || !isDestValid {
+			g.errors = append(g.errors, fmt.Errorf("skipping item %d due to invalid resource URL %q; isURLValid: %v, isDestValid: %v", index, resource.OriginalURLText(), isURLValid, isDestValid))
+			return nil
+		}
+		finalURL, _, _ := resource.GetURLs()
+		if finalURL == nil || len(finalURL.String()) == 0 {
+			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is nil or empty string", index))
+			return nil
+		}
+		result.Link = finalURL.String()
+		result.Source = content.GetSimplifiedHostname(finalURL)
+		result.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
+		result.GloballyUniqueKey = resource.GloballyUniqueKey()
+		result.scores = score.GetLinkScores(finalURL, resource.GloballyUniqueKey(), score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
+		result.TotalSharesCount = result.scores.TotalSharesCount()
+
+	case content.Content:
+		result.Slug = slug.Make(source.Title().Clean())
+	default:
+		fmt.Printf("I don't know about type %T!\n", v)
+	}
+
+	return result
 }
 
 // GenerateContent executes the engine (creates all the Hugo files from the given collection)
 func (g *HugoGenerator) GenerateContent() error {
 	items := g.collection.Content()
-	g.itemsInCollectionCount = len(items)
 	var bar *pb.ProgressBar
 	if g.verbose {
-		bar = pb.StartNew(g.itemsInCollectionCount)
+		bar = pb.StartNew(len(items))
 		bar.ShowCounters = true
 	}
-	for i := 0; i < len(items); i++ {
-		source := items[i]
-		var genContent HugoContent
-		var scores score.LinkScores
-
-		ogTitle, ok := source.Title().OpenGraphTitle()
-		if ok {
-			genContent.Title = ogTitle
-		} else {
-			genContent.Title = source.Title().Clean()
-		}
-
-		ogDescr, ok := source.Summary().OpenGraphDescription()
-		if ok {
-			genContent.Summary = ogDescr
-		} else {
-			firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
-			if fsErr == nil {
-				genContent.Summary = firstSentence
-			} else {
-				genContent.Summary = source.Summary().Original()
+	for i, source := range items {
+		hugoContent := g.makeHugoContentFromSource(i, source)
+		if hugoContent != nil {
+			_, err := hugoContent.createContentFile(g)
+			if err != nil {
+				g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", i, err))
 			}
 		}
-		genContent.Body = source.Body()
-		genContent.Categories = source.Categories()
-		genContent.CreatedOn = HugoContentTime(source.CreatedOn())
-		if source.FeaturedImage() != nil {
-			genContent.FeaturedImage = source.FeaturedImage().String()
-		}
-
-		switch v := source.(type) {
-		case content.CuratedContent:
-			resource := v.TargetResource()
-			if resource == nil {
-				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil TargetResource()", i))
-				continue
-			}
-			isURLValid, isDestValid := resource.IsValid()
-			if !isURLValid || !isDestValid {
-				g.errors = append(g.errors, fmt.Errorf("skipping item %d due to invalid resource URL %q; isURLValid: %v, isDestValid: %v", i, resource.OriginalURLText(), isURLValid, isDestValid))
-				continue
-			}
-			finalURL, _, _ := resource.GetURLs()
-			if finalURL == nil || len(finalURL.String()) == 0 {
-				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is nil or empty string", i))
-				continue
-			}
-			scores = score.GetLinkScores(finalURL, resource.GloballyUniqueKey(), score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
-			genContent.Link = finalURL.String()
-			genContent.Source = content.GetSimplifiedHostname(finalURL)
-			genContent.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
-			genContent.GloballyUniqueKey = resource.GloballyUniqueKey()
-			genContent.TotalSharesCount = scores.TotalSharesCount()
-			genContent.FacebookLinkScore = scores.FacebookLinkScore()
-			genContent.LinkedInLinkScore = scores.LinkedInLinkScore()
-			if !genContent.FacebookLinkScore.IsValid() {
-				g.itemsWithFacebookGraphInvalidCount++
-			}
-			if !genContent.LinkedInLinkScore.IsValid() {
-				g.itemsWithLinkedInGraphInvalidCount++
-			}
-
-		case content.Content:
-			genContent.Slug = slug.Make(source.Title().Clean())
-		default:
-			fmt.Printf("I don't know about type %T!\n", v)
-		}
-
-		_, err := genContent.createFile(g)
-		if err != nil {
-			g.errors = append(g.errors, fmt.Errorf("error writing item %d in HugoGenerator: %+v", i, err))
-		}
-		g.itemsGeneratedCount++
 		if g.verbose {
 			bar.Increment()
 		}
+
+		createDataFile(g.GetScoresDataFilename(hugoContent, "facebook", hugoContent.scores.FacebookLinkScore().IsValid()), hugoContent.scores.FacebookLinkScore())
+		createDataFile(g.GetScoresDataFilename(hugoContent, "linkedin", hugoContent.scores.LinkedInLinkScore().IsValid()), hugoContent.scores.LinkedInLinkScore())
 	}
 	if g.verbose {
-		bar.FinishPrint(fmt.Sprintf("Completed generating %d Hugo items from %q", g.itemsGeneratedCount, g.collection.Source()))
+		bar.FinishPrint(fmt.Sprintf("Completed generating Hugo items from %q", g.collection.Source()))
 	}
 
 	return nil
 }
 
-func (c *HugoContent) createFile(g *HugoGenerator) (string, error) {
+func (c *HugoContent) createContentFile(g *HugoGenerator) (string, error) {
 	fileName := g.GetContentFilename(c)
 	file, createErr := os.Create(fileName)
 	if createErr != nil {
@@ -224,6 +221,26 @@ func (c *HugoContent) createFile(g *HugoGenerator) (string, error) {
 	_, writeErr = file.WriteString("\n\n" + c.Body)
 	if writeErr != nil {
 		return fileName, fmt.Errorf("Unable to write content body %q: %v", fileName, writeErr)
+	}
+
+	return fileName, nil
+}
+
+func createDataFile(fileName string, data interface{}) (string, error) {
+	file, createErr := os.Create(fileName)
+	if createErr != nil {
+		return fileName, fmt.Errorf("Unable to create data file %q: %v", fileName, createErr)
+	}
+	defer file.Close()
+
+	frontMatter, fmErr := json.MarshalIndent(data, "", "	")
+	if fmErr != nil {
+		return fileName, fmt.Errorf("Unable to marshal data into JSON %q: %v", fileName, fmErr)
+	}
+
+	_, writeErr := file.Write(frontMatter)
+	if writeErr != nil {
+		return fileName, fmt.Errorf("Unable to write data %q: %v", fileName, writeErr)
 	}
 
 	return fileName, nil

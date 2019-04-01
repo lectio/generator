@@ -90,6 +90,8 @@ github.com/lectio/score v0.0.0-20190401150814-a0031bb8fc3d h1:kR817i4jqL/VBOGbzD
 github.com/lectio/score v0.0.0-20190401150814-a0031bb8fc3d/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
 github.com/lectio/score v0.0.0-20190401151200-5e6c430377f7 h1:xsVv/C9jCrvktUnW4QpzlTcduRpiNsXJfu25lVTYWTY=
 github.com/lectio/score v0.0.0-20190401151200-5e6c430377f7/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
+github.com/lectio/score v0.0.0-20190401173651-114eb11509e3 h1:cS5VMNRVKkONOum33KGlVCUnbBftXFfbEOjrRGcXtrI=
+github.com/lectio/score v0.0.0-20190401173651-114eb11509e3/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
 github.com/magefile/mage v1.8.0 h1:mzL+xIopvPURVBwHG9A50JcjBO+xV3b5iZ7khFRI+5E=
 github.com/magefile/mage v1.8.0/go.mod h1:IUDi13rsHje59lecXokTfGX0QIzO45uVPlXnJYsXepA=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
@@ -176,6 +178,7 @@ golang.org/x/tools v0.0.0-20190329225845-a96101f168f4/go.mod h1:LCzVGOaR6xXOjkQ3
 golang.org/x/tools v0.0.0-20190330150233-1cd2f21070ec/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
 golang.org/x/tools v0.0.0-20190330163440-a68386b9fffe/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
 golang.org/x/tools v0.0.0-20190330180304-aef51cc3777c/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
+golang.org/x/tools v0.0.0-20190401163957-4fc9f0bfa59a/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
 gonum.org/v1/gonum v0.0.0-20190312223110-e28f136e01a8/go.mod h1:jevfED4GnIEnJrWW55YmY9DMhajHcnkqVnEXmEtMyNI=
 gonum.org/v1/gonum v0.0.0-20190325065607-83576e8213cb h1:BL9xfbLhq74B4UcPFy4+QU45rGhV9lINwuYctFOCU0E=
 gonum.org/v1/gonum v0.0.0-20190325065607-83576e8213cb/go.mod h1:2ltnJ7xHfj0zHS40VVPYEAAMTa3ZGguvHGBSJeRWqE0=
