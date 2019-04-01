@@ -13,12 +13,8 @@ import (
 	"github.com/lectio/content"
 	"github.com/lectio/score"
 	"gopkg.in/cheggaaa/pb.v1"
+	"gopkg.in/yaml.v2"
 )
-
-const facebookGraphFileExtn = ".facebook.json"
-const facebookGraphErrorFileExtn = ".facebook-error.json"
-const linkedInCountFileExtn = ".linkedin.json"
-const linkedInCountErrorFileExtn = ".linkedin-error.json"
 
 // HugoGenerator is the primary Hugo content generator engine
 type HugoGenerator struct {
@@ -44,17 +40,17 @@ func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
 
 // HugoContent is a single Hugo page/content
 type HugoContent struct {
-	Link              string          `json:"link,omitempty"`
-	Title             string          `json:"title"`
-	Summary           string          `json:"description"`
-	Body              string          `json:"content"`
-	Categories        []string        `json:"categories"`
-	CreatedOn         HugoContentTime `json:"date"`
-	FeaturedImage     string          `json:"featuredimage"`
-	Source            string          `json:"source"`
-	Slug              string          `json:"slug"`
-	GloballyUniqueKey string          `json:"uniquekey"`
-	TotalSharesCount  int             `json:"totalSharesCount"`
+	Link              string          `json:"link,omitempty" yaml:"link,omitempty"`
+	Title             string          `json:"title" yaml:"title"`
+	Summary           string          `json:"description" yaml:"description"`
+	Body              string          `json:"content" yaml:"-"`
+	Categories        []string        `json:"categories" yaml:"categories"`
+	CreatedOn         HugoContentTime `json:"date" yaml:"date"`
+	FeaturedImage     string          `json:"featuredimage" yaml:"featuredimage"`
+	Source            string          `json:"source" yaml:"source"`
+	Slug              string          `json:"slug" yaml:"slug"`
+	GloballyUniqueKey string          `json:"uniquekey" yaml:"uniquekey"`
+	TotalSharesCount  int             `json:"totalSharesCount" yaml:"totalSharesCount"`
 
 	scores score.LinkScores
 }
@@ -201,7 +197,8 @@ func (c *HugoContent) createContentFile(g *HugoGenerator) (string, error) {
 	}
 	defer file.Close()
 
-	frontMatter, fmErr := json.MarshalIndent(c, "", "	")
+	frontMatter, fmErr := yaml.Marshal(c)
+	//frontMatter, fmErr := json.MarshalIndent(c, "", "	")
 	if fmErr != nil {
 		return fileName, fmt.Errorf("Unable to marshal front matter %q: %v", fileName, fmErr)
 	}
