@@ -38,11 +38,11 @@ func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
 	return []byte(stamp), nil
 }
 
-// MarshalYAML stores HugoContentTime in a manner readable by Hugo
-func (hct HugoContentTime) MarshalYAML() (interface{}, error) {
+// MarshalText stores HugoContentTime in a manner readable by Hugo
+func (hct HugoContentTime) MarshalText() ([]byte, error) {
 	stamp := fmt.Sprintf("\"%s\"", time.Time(hct).Format("Mon Jan 2 15:04:05 MST 2006"))
-	fmt.Println(stamp)
-	return stamp, nil
+	fmt.Println("< " + stamp)
+	return []byte(stamp), nil
 }
 
 // HugoContent is a single Hugo page/content
@@ -128,6 +128,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 	result.Body = source.Body()
 	result.Categories = source.Categories()
 	result.CreatedOn = HugoContentTime(source.CreatedOn())
+	fmt.Printf("> %v %v\n", source.CreatedOn(), result.CreatedOn)
 	if source.FeaturedImage() != nil {
 		result.FeaturedImage = source.FeaturedImage().String()
 	}
