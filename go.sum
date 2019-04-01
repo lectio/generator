@@ -52,6 +52,8 @@ github.com/lectio/content v0.0.0-20190331220202-b69dadb1d340 h1:vEG+J245ZYw89F0W
 github.com/lectio/content v0.0.0-20190331220202-b69dadb1d340/go.mod h1:Jbb9LwztDexbeqOj4Jqry2dT25P2up8QqCWoF1s0FWg=
 github.com/lectio/content v0.0.0-20190331220514-40d46ec7b371 h1:zYLdlVTQFnuTWKnkpumaiy9t5OY3GFoQ52WydHs5oVw=
 github.com/lectio/content v0.0.0-20190331220514-40d46ec7b371/go.mod h1:Jbb9LwztDexbeqOj4Jqry2dT25P2up8QqCWoF1s0FWg=
+github.com/lectio/content v0.0.0-20190401020354-c1c1d46f999a h1:qLuSB9hDAemkoH5Pmv2zvbkXHZ4A/48hmbfU0b16kNw=
+github.com/lectio/content v0.0.0-20190401020354-c1c1d46f999a/go.mod h1:Jbb9LwztDexbeqOj4Jqry2dT25P2up8QqCWoF1s0FWg=
 github.com/lectio/dropmark v0.0.0-20190321182402-d14de213f43f h1:qTKZTQOskQewfSM1vOuv9m+xaBoZ02TGdhaIrXs+74g=
 github.com/lectio/dropmark v0.0.0-20190321182402-d14de213f43f/go.mod h1:20Npxv5qWcLu+5XsM5mnsgCPUxxtcy3LfOs4Z2ByWQs=
 github.com/lectio/dropmark v0.0.0-20190325175313-7c3a941be466 h1:qo/GiROqSiYTSfKAM1xdh3RqvlCq+IoPP5hS4clC5tM=
@@ -69,6 +71,7 @@ github.com/lectio/dropmark v0.0.0-20190330161757-a7322e026f15/go.mod h1:JjlE4364
 github.com/lectio/dropmark v0.0.0-20190331175705-ef8a2fc620bf/go.mod h1:RI183ZXt8E9Ia/MjUrMnWyN/x7NsQU7SDaXwGbZmGZE=
 github.com/lectio/dropmark v0.0.0-20190331182545-39474430eee5/go.mod h1:RI183ZXt8E9Ia/MjUrMnWyN/x7NsQU7SDaXwGbZmGZE=
 github.com/lectio/dropmark v0.0.0-20190331220648-d02e35b0ff44/go.mod h1:GDEaxnMBzAHX72hUTfOAgp6pFsrYHlaW+8kphNG+A30=
+github.com/lectio/dropmark v0.0.0-20190401020613-e2e3864b1511/go.mod h1:9J47G/0kRwAum4wTvOj61qdNRkjyIKUATpHJSYowRiA=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2 h1:0r9Q05g4aVX+OM3xiXe3K6iBoguVyeDv6P1mQGgGMRM=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2/go.mod h1:ApOjx8MRzEjLcq0nA7kVGZHnv++F3uF7EoOWriQiRfE=
 github.com/lectio/harvester v0.0.0-20190328154655-ed9c25fa9451 h1:hGVbH+CYkIkjX8oZBYVn0LsXKKaWsP1NoetUNZf0lBs=
@@ -83,6 +86,10 @@ github.com/lectio/score v0.0.0-20190325180914-df043eb798d2 h1:uj73Zh5JYTUZG7eGlb
 github.com/lectio/score v0.0.0-20190325180914-df043eb798d2/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
 github.com/lectio/score v0.0.0-20190330164325-6c58408147f4 h1:X4wpQfY1/PNbULtknT3wq+uthgsL6V7PjJn+WIzzLWk=
 github.com/lectio/score v0.0.0-20190330164325-6c58408147f4/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
+github.com/lectio/score v0.0.0-20190401150814-a0031bb8fc3d h1:kR817i4jqL/VBOGbzDQ51Qo03V7nRkK/B+T2IWH8d2A=
+github.com/lectio/score v0.0.0-20190401150814-a0031bb8fc3d/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
+github.com/lectio/score v0.0.0-20190401151200-5e6c430377f7 h1:xsVv/C9jCrvktUnW4QpzlTcduRpiNsXJfu25lVTYWTY=
+github.com/lectio/score v0.0.0-20190401151200-5e6c430377f7/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
 github.com/magefile/mage v1.8.0 h1:mzL+xIopvPURVBwHG9A50JcjBO+xV3b5iZ7khFRI+5E=
 github.com/magefile/mage v1.8.0/go.mod h1:IUDi13rsHje59lecXokTfGX0QIzO45uVPlXnJYsXepA=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=

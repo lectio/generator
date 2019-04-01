@@ -14,6 +14,11 @@ import (
 	"gopkg.in/cheggaaa/pb.v1"
 )
 
+const facebookGraphFileExtn = ".facebook.json"
+const facebookGraphErrorFileExtn = ".facebook-error.json"
+const linkedInCountFileExtn = ".linkedin.json"
+const linkedInCountErrorFileExtn = ".linkedin-error.json"
+
 // HugoGenerator is the primary Hugo content generator engine
 type HugoGenerator struct {
 	collection                         content.Collection
@@ -42,19 +47,19 @@ func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
 
 // HugoContent is a single Hugo page/content
 type HugoContent struct {
-	Link              string                         `json:"link"`
-	Title             string                         `json:"title"`
-	Summary           string                         `json:"description"`
-	Body              string                         `json:"content"`
-	Categories        []string                       `json:"categories"`
-	CreatedOn         HugoContentTime                `json:"date"`
-	FeaturedImage     string                         `json:"featuredimage"`
-	Source            string                         `json:"source"`
-	Slug              string                         `json:"slug"`
-	GloballyUniqueKey string                         `json:"uniquekey"`
-	TotalSharesCount  int                            `json:"totalSharesCount"`
-	FacebookGraph     *score.FacebookGraphResult     `json:"fbgraph"`
-	LinkedInGraph     *score.LinkedInCountServResult `json:"ligraph"`
+	Link              string                              `json:"link"`
+	Title             string                              `json:"title"`
+	Summary           string                              `json:"description"`
+	Body              string                              `json:"content"`
+	Categories        []string                            `json:"categories"`
+	CreatedOn         HugoContentTime                     `json:"date"`
+	FeaturedImage     string                              `json:"featuredimage"`
+	Source            string                              `json:"source"`
+	Slug              string                              `json:"slug"`
+	GloballyUniqueKey string                              `json:"uniquekey"`
+	TotalSharesCount  int                                 `json:"totalSharesCount"`
+	FacebookLinkScore *score.FacebookLinkScoreGraphResult `json:"fbgraph"`
+	LinkedInLinkScore *score.LinkedInLinkScoreResult      `json:"ligraph"`
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
@@ -161,18 +166,18 @@ func (g *HugoGenerator) GenerateContent() error {
 				g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is nil or empty string", i))
 				continue
 			}
-			scores = score.GetLinkScores(finalURL, score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
+			scores = score.GetLinkScores(finalURL, resource.GloballyUniqueKey(), score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
 			genContent.Link = finalURL.String()
 			genContent.Source = content.GetSimplifiedHostname(finalURL)
 			genContent.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
 			genContent.GloballyUniqueKey = resource.GloballyUniqueKey()
 			genContent.TotalSharesCount = scores.TotalSharesCount()
-			genContent.FacebookGraph = scores.FacebookGraph()
-			genContent.LinkedInGraph = scores.LinkedInCount()
-			if !genContent.FacebookGraph.IsValid() {
+			genContent.FacebookLinkScore = scores.FacebookLinkScore()
+			genContent.LinkedInLinkScore = scores.LinkedInLinkScore()
+			if !genContent.FacebookLinkScore.IsValid() {
 				g.itemsWithFacebookGraphInvalidCount++
 			}
-			if !genContent.LinkedInGraph.IsValid() {
+			if !genContent.LinkedInLinkScore.IsValid() {
 				g.itemsWithLinkedInGraphInvalidCount++
 			}
 

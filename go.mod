@@ -6,10 +6,10 @@ require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/gosimple/slug v1.4.2
 	github.com/hashicorp/go-multierror v1.0.0
-	github.com/lectio/content v0.0.0-20190331220514-40d46ec7b371
-	github.com/lectio/dropmark v0.0.0-20190331220648-d02e35b0ff44
+	github.com/lectio/content v0.0.0-20190401020354-c1c1d46f999a
+	github.com/lectio/dropmark v0.0.0-20190401020613-e2e3864b1511
 	github.com/lectio/harvester v0.0.0-20190330161551-53b737a7e78f
-	github.com/lectio/score v0.0.0-20190330164325-6c58408147f4
+	github.com/lectio/score v0.0.0-20190401151200-5e6c430377f7
 	github.com/magefile/mage v1.8.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 	gopkg.in/jdkato/prose.v2 v2.0.0-20180825173540-767a23049b9e
