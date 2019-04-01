@@ -40,7 +40,9 @@ func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
 
 // MarshalYAML stores HugoContentTime in a manner readable by Hugo
 func (hct HugoContentTime) MarshalYAML() (interface{}, error) {
-	return fmt.Sprintf("\"%s\"", time.Time(hct).Format("Mon Jan 2 15:04:05 MST 2006")), nil
+	stamp := fmt.Sprintf("\"%s\"", time.Time(hct).Format("Mon Jan 2 15:04:05 MST 2006"))
+	fmt.Println(stamp)
+	return stamp, nil
 }
 
 // HugoContent is a single Hugo page/content
@@ -203,17 +205,17 @@ func (c *HugoContent) createContentFile(g *HugoGenerator) (string, error) {
 	defer file.Close()
 
 	frontMatter, fmErr := yaml.Marshal(c)
-	//frontMatter, fmErr := json.MarshalIndent(c, "", "	")
 	if fmErr != nil {
 		return fileName, fmt.Errorf("Unable to marshal front matter %q: %v", fileName, fmErr)
 	}
 
+	file.WriteString("---\n")
 	_, writeErr := file.Write(frontMatter)
 	if writeErr != nil {
 		return fileName, fmt.Errorf("Unable to write front matter %q: %v", fileName, writeErr)
 	}
 
-	_, writeErr = file.WriteString("\n\n" + c.Body)
+	_, writeErr = file.WriteString("---\n" + c.Body)
 	if writeErr != nil {
 		return fileName, fmt.Errorf("Unable to write content body %q: %v", fileName, writeErr)
 	}
