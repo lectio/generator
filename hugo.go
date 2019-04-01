@@ -41,23 +41,22 @@ func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
 // MarshalText stores HugoContentTime in a manner readable by Hugo
 func (hct HugoContentTime) MarshalText() ([]byte, error) {
 	stamp := fmt.Sprintf("\"%s\"", time.Time(hct).Format("Mon Jan 2 15:04:05 MST 2006"))
-	fmt.Println("< " + stamp)
 	return []byte(stamp), nil
 }
 
 // HugoContent is a single Hugo page/content
 type HugoContent struct {
-	Link              string    `json:"link,omitempty" yaml:"link,omitempty"`
-	Title             string    `json:"title" yaml:"title"`
-	Summary           string    `json:"description" yaml:"description,omitempty"`
-	Body              string    `json:"content" yaml:"-"`
-	Categories        []string  `json:"categories" yaml:"categories,omitempty"`
-	CreatedOn         time.Time `json:"date" yaml:"date"`
-	FeaturedImage     string    `json:"featuredimage" yaml:"featuredimage,omitempty"`
-	Source            string    `json:"source" yaml:"source,omitempty"`
-	Slug              string    `json:"slug" yaml:"slug"`
-	GloballyUniqueKey string    `json:"uniquekey" yaml:"uniquekey"`
-	TotalSharesCount  int       `json:"totalSharesCount" yaml:"totalSharesCount"`
+	Link              string   `json:"link,omitempty" yaml:"link,omitempty"`
+	Title             string   `json:"title" yaml:"title"`
+	Summary           string   `json:"description" yaml:"description,omitempty"`
+	Body              string   `json:"content" yaml:"-"`
+	Categories        []string `json:"categories" yaml:"categories,omitempty"`
+	CreatedOn         string   `json:"date" yaml:"date"`
+	FeaturedImage     string   `json:"featuredimage" yaml:"featuredimage,omitempty"`
+	Source            string   `json:"source" yaml:"source,omitempty"`
+	Slug              string   `json:"slug" yaml:"slug"`
+	GloballyUniqueKey string   `json:"uniquekey" yaml:"uniquekey"`
+	TotalSharesCount  int      `json:"totalSharesCount" yaml:"totalSharesCount"`
 
 	scores score.LinkScores
 }
@@ -127,7 +126,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 
 	result.Body = source.Body()
 	result.Categories = source.Categories()
-	result.CreatedOn = source.CreatedOn()
+	result.CreatedOn = time.Time(source.CreatedOn()).Format("Mon Jan 2 15:04:05 MST 2006")
 	if source.FeaturedImage() != nil {
 		result.FeaturedImage = source.FeaturedImage().String()
 	}
