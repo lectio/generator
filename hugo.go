@@ -2,6 +2,7 @@ package generator
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -99,15 +100,6 @@ func (g HugoGenerator) GetContentFilename(gc *HugoContent) string {
 	return fmt.Sprintf("%s.md", filepath.Join(g.contentPath, gc.Slug))
 }
 
-// GetScoresDataFilename returns the name of the file a given piece of HugoContent
-func (g HugoGenerator) GetScoresDataFilename(gc *HugoContent, scoreSource string, isValid bool) string {
-	suffix := scoreSource
-	if !isValid {
-		suffix = scoreSource + "-error"
-	}
-	return fmt.Sprintf("%s.%s.json", filepath.Join(g.scoresDataPath, gc.GloballyUniqueKey), suffix)
-}
-
 func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Content) *HugoContent {
 	result := new(HugoContent)
 
@@ -190,8 +182,8 @@ func (g *HugoGenerator) GenerateContent() error {
 			bar.Increment()
 		}
 
-		createDataFile(g.GetScoresDataFilename(hugoContent, "facebook", hugoContent.scores.FacebookLinkScore().IsValid()), hugoContent.scores.FacebookLinkScore())
-		createDataFile(g.GetScoresDataFilename(hugoContent, "linkedin", hugoContent.scores.LinkedInLinkScore().IsValid()), hugoContent.scores.LinkedInLinkScore())
+		hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.FacebookLinkScore())
+		hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.LinkedInLinkScore())
 	}
 	if g.verbose {
 		bar.FinishPrint(fmt.Sprintf("Completed generating Hugo items from %q", g.collection.Source()))
@@ -226,14 +218,22 @@ func (c *HugoContent) createContentFile(g *HugoGenerator) (string, error) {
 	return fileName, nil
 }
 
-func createDataFile(fileName string, data interface{}) (string, error) {
+func (c *HugoContent) createScorerDataFile(path string, scorer score.LinkScorer) (string, error) {
+	if scorer == nil {
+		return "", errors.New("Unable to create data file, scorer is nil")
+	}
+	suffix, _ := scorer.Names()
+	if !scorer.IsValid() {
+		suffix = suffix + "-error"
+	}
+	fileName := fmt.Sprintf("%s.%s.json", filepath.Join(path, c.GloballyUniqueKey), suffix)
 	file, createErr := os.Create(fileName)
 	if createErr != nil {
 		return fileName, fmt.Errorf("Unable to create data file %q: %v", fileName, createErr)
 	}
 	defer file.Close()
 
-	frontMatter, fmErr := json.MarshalIndent(data, "", "	")
+	frontMatter, fmErr := json.MarshalIndent(scorer, "", "	")
 	if fmErr != nil {
 		return fileName, fmt.Errorf("Unable to marshal data into JSON %q: %v", fileName, fmErr)
 	}

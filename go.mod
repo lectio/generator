@@ -9,7 +9,7 @@ require (
 	github.com/lectio/content v0.0.0-20190401020354-c1c1d46f999a
 	github.com/lectio/dropmark v0.0.0-20190401020613-e2e3864b1511
 	github.com/lectio/harvester v0.0.0-20190330161551-53b737a7e78f
-	github.com/lectio/score v0.0.0-20190401173651-114eb11509e3
+	github.com/lectio/score v0.0.0-20190401190332-6b7e85d12bc6
 	github.com/magefile/mage v1.8.0
 	golang.org/x/tools v0.0.0-20190401163957-4fc9f0bfa59a // indirect
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
