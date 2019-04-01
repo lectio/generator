@@ -29,21 +29,6 @@ type HugoGenerator struct {
 	errors               []error
 }
 
-// HugoContentTime is a convenience type for storing content timestamp
-type HugoContentTime time.Time
-
-// MarshalJSON stores HugoContentTime in a manner readable by Hugo
-func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
-	stamp := fmt.Sprintf("\"%s\"", time.Time(hct).Format("Mon Jan 2 15:04:05 MST 2006"))
-	return []byte(stamp), nil
-}
-
-// MarshalText stores HugoContentTime in a manner readable by Hugo
-func (hct HugoContentTime) MarshalText() ([]byte, error) {
-	stamp := fmt.Sprintf("\"%s\"", time.Time(hct).Format("Mon Jan 2 15:04:05 MST 2006"))
-	return []byte(stamp), nil
-}
-
 // HugoContent is a single Hugo page/content
 type HugoContent struct {
 	Link              string   `json:"link,omitempty" yaml:"link,omitempty"`
@@ -57,6 +42,7 @@ type HugoContent struct {
 	Slug              string   `json:"slug" yaml:"slug"`
 	GloballyUniqueKey string   `json:"uniquekey" yaml:"uniquekey"`
 	TotalSharesCount  int      `json:"totalSharesCount" yaml:"totalSharesCount"`
+	EditorURL         string   `json:"editorURL,omitempty" yaml:"editorURL,omitempty"`
 
 	scores score.LinkScores
 }
@@ -127,6 +113,10 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 	result.Body = source.Body()
 	result.Categories = source.Categories()
 	result.CreatedOn = time.Time(source.CreatedOn()).Format("Mon Jan 2 15:04:05 MST 2006")
+
+	editorURL, _ := source.Directive("editorURL")
+	result.EditorURL = editorURL.(string)
+
 	if source.FeaturedImage() != nil {
 		result.FeaturedImage = source.FeaturedImage().String()
 	}
