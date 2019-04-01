@@ -42,18 +42,19 @@ func (hct HugoContentTime) MarshalJSON() ([]byte, error) {
 
 // HugoContent is a single Hugo page/content
 type HugoContent struct {
-	Link             string                         `json:"link"`
-	Title            string                         `json:"title"`
-	Summary          string                         `json:"description"`
-	Body             string                         `json:"content"`
-	Categories       []string                       `json:"categories"`
-	CreatedOn        HugoContentTime                `json:"date"`
-	FeaturedImage    string                         `json:"featuredimage"`
-	Source           string                         `json:"source"`
-	Slug             string                         `json:"slug"`
-	TotalSharesCount int                            `json:"totalSharesCount"`
-	FacebookGraph    *score.FacebookGraphResult     `json:"fbgraph"`
-	LinkedInGraph    *score.LinkedInCountServResult `json:"ligraph"`
+	Link              string                         `json:"link"`
+	Title             string                         `json:"title"`
+	Summary           string                         `json:"description"`
+	Body              string                         `json:"content"`
+	Categories        []string                       `json:"categories"`
+	CreatedOn         HugoContentTime                `json:"date"`
+	FeaturedImage     string                         `json:"featuredimage"`
+	Source            string                         `json:"source"`
+	Slug              string                         `json:"slug"`
+	GloballyUniqueKey string                         `json:"uniquekey"`
+	TotalSharesCount  int                            `json:"totalSharesCount"`
+	FacebookGraph     *score.FacebookGraphResult     `json:"fbgraph"`
+	LinkedInGraph     *score.LinkedInCountServResult `json:"ligraph"`
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
@@ -164,6 +165,7 @@ func (g *HugoGenerator) GenerateContent() error {
 			genContent.Link = finalURL.String()
 			genContent.Source = content.GetSimplifiedHostname(finalURL)
 			genContent.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
+			genContent.GloballyUniqueKey = resource.GloballyUniqueKey()
 			genContent.TotalSharesCount = scores.TotalSharesCount()
 			genContent.FacebookGraph = scores.FacebookGraph()
 			genContent.LinkedInGraph = scores.LinkedInCount()
