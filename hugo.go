@@ -177,14 +177,13 @@ func (g *HugoGenerator) GenerateContent() error {
 			if err != nil {
 				g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", i, err))
 			}
+			if hugoContent.scores != nil {
+				hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.FacebookLinkScore())
+				hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.LinkedInLinkScore())
+			}
 		}
 		if g.verbose {
 			bar.Increment()
-		}
-
-		if hugoContent.scores != nil {
-			hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.FacebookLinkScore())
-			hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.LinkedInLinkScore())
 		}
 	}
 	if g.verbose {
