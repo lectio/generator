@@ -98,7 +98,12 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Title = source.Title().Clean()
 	}
 
-	if len(source.Summary().Original()) == 0 {
+	bodyFrontMatterDescr, _ := source.Directive("body.frontmatter.description")
+	switch bodyFrontMatterDescr.(type) {
+	case string:
+		result.Summary = bodyFrontMatterDescr.(string)
+	}
+	if len(result.Summary) == 0 {
 		ogDescr, ok := source.Summary().OpenGraphDescription()
 		if ok {
 			result.Summary = ogDescr
@@ -106,6 +111,8 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 			firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
 			if fsErr == nil {
 				result.Summary = firstSentence
+			} else {
+				result.Summary = source.Summary().Original()
 			}
 		}
 	}
