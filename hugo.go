@@ -98,17 +98,19 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Title = source.Title().Clean()
 	}
 
-	bodyFrontMatterDescr, _ := source.Directive("body.frontmatter.description")
-	switch bodyFrontMatterDescr.(type) {
-	case string:
-		result.Summary = bodyFrontMatterDescr.(string)
+	bodyFrontMatterDescr, ok, _ := source.Body().FrontMatterValue("description")
+	if ok {
+		switch bodyFrontMatterDescr.(type) {
+		case string:
+			result.Summary = bodyFrontMatterDescr.(string)
+		}
 	}
 	if len(result.Summary) == 0 {
 		ogDescr, ok := source.Summary().OpenGraphDescription()
 		if ok {
 			result.Summary = ogDescr
 		} else {
-			firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
+			firstSentence, fsErr := source.Body().FirstSentence()
 			if fsErr == nil {
 				result.Summary = firstSentence
 			} else {
@@ -117,11 +119,11 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		}
 	}
 
-	result.Body = source.Body()
+	result.Body = source.Body().WithoutFrontMatter()
 	result.Categories = source.Categories()
 	result.CreatedOn = time.Time(source.CreatedOn()).Format("Mon Jan 2 15:04:05 MST 2006")
 
-	editorURL, _ := source.Directive("editorURL")
+	editorURL, _, _ := source.Directive("editorURL")
 	result.EditorURL = editorURL.(string)
 
 	if source.FeaturedImage() != nil {
