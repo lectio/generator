@@ -98,15 +98,15 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Title = source.Title().Clean()
 	}
 
-	ogDescr, ok := source.Summary().OpenGraphDescription()
-	if ok {
-		result.Summary = ogDescr
-	} else {
-		firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
-		if fsErr == nil {
-			result.Summary = firstSentence
+	if len(source.Summary().Original()) == 0 {
+		ogDescr, ok := source.Summary().OpenGraphDescription()
+		if ok {
+			result.Summary = ogDescr
 		} else {
-			result.Summary = source.Summary().Original()
+			firstSentence, fsErr := source.Summary().FirstSentenceOfBody()
+			if fsErr == nil {
+				result.Summary = firstSentence
+			}
 		}
 	}
 
