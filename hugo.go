@@ -87,7 +87,7 @@ func (g HugoGenerator) GetContentFilename(gc *HugoContent) string {
 func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Content) *HugoContent {
 	result := new(HugoContent)
 
-	ogTitle, ok := source.Title().OpenGraphTitle()
+	ogTitle, ok := source.Title().OpenGraphTitle(true)
 	if ok {
 		result.Title = ogTitle
 	} else {
