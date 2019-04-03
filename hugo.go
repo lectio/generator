@@ -41,10 +41,9 @@ type HugoContent struct {
 	Source            string   `json:"source" yaml:"source,omitempty"`
 	Slug              string   `json:"slug" yaml:"slug"`
 	GloballyUniqueKey string   `json:"uniquekey" yaml:"uniquekey"`
-	TotalSharesCount  int      `json:"totalSharesCount" yaml:"totalSharesCount"`
 	EditorURL         string   `json:"editorURL,omitempty" yaml:"editorURL,omitempty"`
 
-	scores score.LinkScores
+	scores *score.AggregatedLinkScores
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
@@ -151,8 +150,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Source = content.GetSimplifiedHostname(finalURL)
 		result.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
 		result.GloballyUniqueKey = resource.GloballyUniqueKey()
-		result.scores = score.GetLinkScores(finalURL, resource.GloballyUniqueKey(), score.DefaultInitialTotalSharesCount, g.simulateSocialScores)
-		result.TotalSharesCount = result.scores.TotalSharesCount()
+		result.scores = score.GetAggregatedLinkScores(finalURL, resource.GloballyUniqueKey(), -1, g.simulateSocialScores)
 
 	case content.Content:
 		result.Slug = slug.Make(source.Title().Clean())
@@ -178,9 +176,8 @@ func (g *HugoGenerator) GenerateContent() error {
 			if err != nil {
 				g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", i, err))
 			}
-			if hugoContent.scores != nil {
-				hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.FacebookLinkScore())
-				hugoContent.createScorerDataFile(g.scoresDataPath, hugoContent.scores.LinkedInLinkScore())
+			for _, scorer := range hugoContent.scores.Scores {
+				hugoContent.createScorerDataFile(g.scoresDataPath, scorer)
 			}
 		}
 		if g.verbose {
@@ -221,12 +218,12 @@ func (c *HugoContent) createContentFile(g *HugoGenerator) (string, error) {
 	return fileName, nil
 }
 
-func (c *HugoContent) createScorerDataFile(path string, scorer score.LinkScorer) (string, error) {
-	if scorer == nil {
-		return "", errors.New("Unable to create data file, scorer is nil")
+func (c *HugoContent) createScorerDataFile(path string, scores score.LinkScores) (string, error) {
+	if scores == nil {
+		return "", errors.New("Unable to create data file, scores is nil")
 	}
-	suffix, _ := scorer.Names()
-	if !scorer.IsValid() {
+	suffix, _ := scores.Names()
+	if !scores.IsValid() {
 		suffix = suffix + "-error"
 	}
 	fileName := fmt.Sprintf("%s.%s.json", filepath.Join(path, c.GloballyUniqueKey), suffix)
@@ -236,7 +233,7 @@ func (c *HugoContent) createScorerDataFile(path string, scorer score.LinkScorer)
 	}
 	defer file.Close()
 
-	frontMatter, fmErr := json.MarshalIndent(scorer, "", "	")
+	frontMatter, fmErr := json.MarshalIndent(scores, "", "	")
 	if fmErr != nil {
 		return fileName, fmt.Errorf("Unable to marshal data into JSON %q: %v", fileName, fmErr)
 	}
