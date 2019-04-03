@@ -176,8 +176,9 @@ func (g *HugoGenerator) GenerateContent() error {
 			if err != nil {
 				g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", i, err))
 			}
+			hugoContent.createScoresDataFile(g.scoresDataPath, hugoContent.scores)
 			for _, scorer := range hugoContent.scores.Scores {
-				hugoContent.createScorerDataFile(g.scoresDataPath, scorer)
+				hugoContent.createScoresDataFile(g.scoresDataPath, scorer)
 			}
 		}
 		if g.verbose {
@@ -218,7 +219,7 @@ func (c *HugoContent) createContentFile(g *HugoGenerator) (string, error) {
 	return fileName, nil
 }
 
-func (c *HugoContent) createScorerDataFile(path string, scores score.LinkScores) (string, error) {
+func (c *HugoContent) createScoresDataFile(path string, scores score.LinkScores) (string, error) {
 	if scores == nil {
 		return "", errors.New("Unable to create data file, scores is nil")
 	}
