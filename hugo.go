@@ -136,6 +136,11 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil TargetResource()", index))
 			return nil
 		}
+		isIgnored, ignoreReason := resource.IsIgnored()
+		if isIgnored {
+			g.errors = append(g.errors, fmt.Errorf("ignoring item %d (%q) in HugoGenerator: %v", index, resource.OriginalURLText(), ignoreReason))
+			return nil
+		}
 		isURLValid, isDestValid := resource.IsValid()
 		if !isURLValid || !isDestValid {
 			g.errors = append(g.errors, fmt.Errorf("skipping item %d due to invalid resource URL %q; isURLValid: %v, isDestValid: %v", index, resource.OriginalURLText(), isURLValid, isDestValid))
