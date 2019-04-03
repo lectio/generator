@@ -82,6 +82,7 @@ github.com/lectio/dropmark v0.0.0-20190401205338-cd4073c4e14d/go.mod h1:V7FN5btY
 github.com/lectio/dropmark v0.0.0-20190402021513-c7ace1e99b42/go.mod h1:/NfK8T8BYX+E2QtP7cjPkyC/7+m1vOffPpST5nirqZ4=
 github.com/lectio/dropmark v0.0.0-20190402030749-b96bd43076be/go.mod h1:/NfK8T8BYX+E2QtP7cjPkyC/7+m1vOffPpST5nirqZ4=
 github.com/lectio/dropmark v0.0.0-20190402142148-96698eba8d79/go.mod h1:IoeR7yHLT4MIANR7a+G8WmkXIvp4zYne8CI71w/ta/k=
+github.com/lectio/dropmark v0.0.0-20190403140919-001230fff3a9/go.mod h1:RMhZaSpRAuf49fFHDtLlWWbKyLGbbYYajxiB4bWlfCk=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2 h1:0r9Q05g4aVX+OM3xiXe3K6iBoguVyeDv6P1mQGgGMRM=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2/go.mod h1:ApOjx8MRzEjLcq0nA7kVGZHnv++F3uF7EoOWriQiRfE=
 github.com/lectio/harvester v0.0.0-20190328154655-ed9c25fa9451 h1:hGVbH+CYkIkjX8oZBYVn0LsXKKaWsP1NoetUNZf0lBs=
@@ -110,6 +111,10 @@ github.com/lectio/score v0.0.0-20190401192339-5c8416c8f4e7 h1:CQZt+qNoebLo4msyTw
 github.com/lectio/score v0.0.0-20190401192339-5c8416c8f4e7/go.mod h1:PVdE9/m4fSNIe+W7YjmiKxWL9Ogh1g2Cpvz+OH44YPI=
 github.com/lectio/score v0.0.0-20190403015615-53dd1441fa39 h1:eWjwoTGWlWjK9KnHbPiYaBzNWoLyclVcD3TfMBwkjiI=
 github.com/lectio/score v0.0.0-20190403015615-53dd1441fa39/go.mod h1:phMta6D9OKeKBM6IAkB6Cwis6C9Thnz3ehQeBB/vnhs=
+github.com/lectio/score v0.0.0-20190403143013-3e9abf8e8a6f h1:6iUjlsK5CmgrexwGK9REOfie/iQ04XWEkyCZYSjao60=
+github.com/lectio/score v0.0.0-20190403143013-3e9abf8e8a6f/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
+github.com/lectio/score v0.0.0-20190403143557-28513b7f2d62 h1:rcaB8nBnUA066g6UU/jvv/r6TKXCGf+kkXF816U6e3g=
+github.com/lectio/score v0.0.0-20190403143557-28513b7f2d62/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
 github.com/magefile/mage v1.8.0 h1:mzL+xIopvPURVBwHG9A50JcjBO+xV3b5iZ7khFRI+5E=
 github.com/magefile/mage v1.8.0/go.mod h1:IUDi13rsHje59lecXokTfGX0QIzO45uVPlXnJYsXepA=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
@@ -215,6 +220,7 @@ gonum.org/v1/gonum v0.0.0-20190330083134-779ef2ac207d/go.mod h1:2ltnJ7xHfj0zHS40
 gonum.org/v1/gonum v0.0.0-20190331082636-9a0642d3dda0/go.mod h1:2ltnJ7xHfj0zHS40VVPYEAAMTa3ZGguvHGBSJeRWqE0=
 gonum.org/v1/gonum v0.0.0-20190331200053-3d26580ed485/go.mod h1:2ltnJ7xHfj0zHS40VVPYEAAMTa3ZGguvHGBSJeRWqE0=
 gonum.org/v1/gonum v0.0.0-20190402102716-30fedc02ced2/go.mod h1:2ltnJ7xHfj0zHS40VVPYEAAMTa3ZGguvHGBSJeRWqE0=
+gonum.org/v1/gonum v0.0.0-20190403090810-169ee079a3fc/go.mod h1:2ltnJ7xHfj0zHS40VVPYEAAMTa3ZGguvHGBSJeRWqE0=
 gonum.org/v1/netlib v0.0.0-20190313105609-8cb42192e0e0/go.mod h1:wa6Ws7BG/ESfp6dHfk7C6KdzKA7wR7u/rKwOGE66zvw=
 gonum.org/v1/netlib v0.0.0-20190314102120-fc220b4194ca/go.mod h1:HtmWMIgmX0AAq9G6qwzC9jvu1967JZcewWVFn32Ojy4=
 gonum.org/v1/netlib v0.0.0-20190325200557-eaed4c7f6f88/go.mod h1:HtmWMIgmX0AAq9G6qwzC9jvu1967JZcewWVFn32Ojy4=

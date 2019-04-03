@@ -223,11 +223,7 @@ func (c *HugoContent) createScoresDataFile(path string, scores score.LinkScores)
 	if scores == nil {
 		return "", errors.New("Unable to create data file, scores is nil")
 	}
-	suffix, _ := scores.Names()
-	if !scores.IsValid() {
-		suffix = suffix + "-error"
-	}
-	fileName := fmt.Sprintf("%s.%s.json", filepath.Join(path, c.GloballyUniqueKey), suffix)
+	fileName := scores.FileName(path)
 	file, createErr := os.Create(fileName)
 	if createErr != nil {
 		return fileName, fmt.Errorf("Unable to create data file %q: %v", fileName, createErr)
