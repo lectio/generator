@@ -1,8 +1,6 @@
 package generator
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -22,7 +20,7 @@ type HugoGenerator struct {
 	homePath             string
 	contentID            string
 	contentPath          string
-	scoresDataPath       string
+	scoresStore          score.LinkScoresStore
 	simulateSocialScores bool
 	verbose              bool
 	createDestPaths      bool
@@ -53,25 +51,24 @@ func NewHugoGenerator(collection content.Collection, homePath string, contentID 
 	result.homePath = homePath
 	result.contentID = contentID
 	result.contentPath = filepath.Join(homePath, "content", contentID)
-	result.scoresDataPath = filepath.Join(homePath, "data", "scores", contentID)
 	result.simulateSocialScores = simulateSocialScores
 	result.verbose = verbose
 	result.createDestPaths = createDestPaths
+
+	scoresStore, ssErr := score.MakeLinkScoresJSONFileStore(filepath.Join(homePath, "data", contentID+"_scores"), filepath.Join(homePath, "data", contentID+"_scores-errors"), createDestPaths)
+	if ssErr != nil {
+		return nil, ssErr
+	}
+	result.scoresStore = scoresStore
 
 	if createDestPaths {
 		if _, err := createDirIfNotExist(result.contentPath); err != nil {
 			return result, fmt.Errorf("Unable to create content path %q: %v", result.contentPath, err)
 		}
-		if _, err := createDirIfNotExist(result.scoresDataPath); err != nil {
-			return result, fmt.Errorf("Unable to create scores data path %q: %v", result.scoresDataPath, err)
-		}
 	}
 
 	if _, err := os.Stat(result.contentPath); os.IsNotExist(err) {
 		return result, fmt.Errorf("content path %q does not exist: %v", result.contentPath, err)
-	}
-	if _, err := os.Stat(result.scoresDataPath); os.IsNotExist(err) {
-		return result, fmt.Errorf("scores data path %q does not exist: %v", result.scoresDataPath, err)
 	}
 
 	return result, nil
@@ -173,15 +170,15 @@ func (g *HugoGenerator) createContentFiles(index int, ch chan<- int, source cont
 		if err != nil {
 			g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", index, err))
 		}
-		hugoContent.createScoresDataFile(g.scoresDataPath, hugoContent.scores)
+		g.scoresStore.Write(hugoContent.scores)
 		for _, scorer := range hugoContent.scores.Scores {
-			hugoContent.createScoresDataFile(g.scoresDataPath, scorer)
+			g.scoresStore.Write(scorer)
 		}
 	}
 	ch <- index
 }
 
-// GenerateContent executes the engine (creates all the Hugo files from the given collection)
+// GenerateContent executes the engine (creates all the Hugo files from the given collection concurrently)
 func (g *HugoGenerator) GenerateContent() error {
 	items := g.collection.Content()
 	var bar *pb.ProgressBar
@@ -229,30 +226,6 @@ func (c *HugoContent) createContentFile(g *HugoGenerator) (string, error) {
 	_, writeErr = file.WriteString("---\n" + c.Body)
 	if writeErr != nil {
 		return fileName, fmt.Errorf("Unable to write content body %q: %v", fileName, writeErr)
-	}
-
-	return fileName, nil
-}
-
-func (c *HugoContent) createScoresDataFile(path string, scores score.LinkScores) (string, error) {
-	if scores == nil {
-		return "", errors.New("Unable to create data file, scores is nil")
-	}
-	fileName := scores.FileName(path)
-	file, createErr := os.Create(fileName)
-	if createErr != nil {
-		return fileName, fmt.Errorf("Unable to create data file %q: %v", fileName, createErr)
-	}
-	defer file.Close()
-
-	frontMatter, fmErr := json.MarshalIndent(scores, "", "	")
-	if fmErr != nil {
-		return fileName, fmt.Errorf("Unable to marshal data into JSON %q: %v", fileName, fmErr)
-	}
-
-	_, writeErr := file.Write(frontMatter)
-	if writeErr != nil {
-		return fileName, fmt.Errorf("Unable to write data %q: %v", fileName, writeErr)
 	}
 
 	return fileName, nil
