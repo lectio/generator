@@ -166,6 +166,21 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 	return result
 }
 
+func (g *HugoGenerator) createContentFiles(index int, ch chan<- int, source content.Content) {
+	hugoContent := g.makeHugoContentFromSource(index, source)
+	if hugoContent != nil {
+		_, err := hugoContent.createContentFile(g)
+		if err != nil {
+			g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", index, err))
+		}
+		hugoContent.createScoresDataFile(g.scoresDataPath, hugoContent.scores)
+		for _, scorer := range hugoContent.scores.Scores {
+			hugoContent.createScoresDataFile(g.scoresDataPath, scorer)
+		}
+	}
+	ch <- index
+}
+
 // GenerateContent executes the engine (creates all the Hugo files from the given collection)
 func (g *HugoGenerator) GenerateContent() error {
 	items := g.collection.Content()
@@ -174,22 +189,17 @@ func (g *HugoGenerator) GenerateContent() error {
 		bar = pb.StartNew(len(items))
 		bar.ShowCounters = true
 	}
+	ch := make(chan int)
 	for i, source := range items {
-		hugoContent := g.makeHugoContentFromSource(i, source)
-		if hugoContent != nil {
-			_, err := hugoContent.createContentFile(g)
-			if err != nil {
-				g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", i, err))
-			}
-			hugoContent.createScoresDataFile(g.scoresDataPath, hugoContent.scores)
-			for _, scorer := range hugoContent.scores.Scores {
-				hugoContent.createScoresDataFile(g.scoresDataPath, scorer)
-			}
-		}
+		go g.createContentFiles(i, ch, source)
+	}
+	for i := 0; i < len(items); i++ {
+		_ = <-ch
 		if g.verbose {
 			bar.Increment()
 		}
 	}
+
 	if g.verbose {
 		bar.FinishPrint(fmt.Sprintf("Completed generating Hugo items from %q", g.collection.Source()))
 	}
