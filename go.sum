@@ -86,6 +86,7 @@ github.com/lectio/dropmark v0.0.0-20190402030749-b96bd43076be/go.mod h1:/NfK8T8B
 github.com/lectio/dropmark v0.0.0-20190402142148-96698eba8d79/go.mod h1:IoeR7yHLT4MIANR7a+G8WmkXIvp4zYne8CI71w/ta/k=
 github.com/lectio/dropmark v0.0.0-20190403140919-001230fff3a9/go.mod h1:RMhZaSpRAuf49fFHDtLlWWbKyLGbbYYajxiB4bWlfCk=
 github.com/lectio/dropmark v0.0.0-20190403210555-507802c254d4/go.mod h1:khBaA0DNpxFplUHdeG9PzLx3AQdPCxuExla0ckdOf8M=
+github.com/lectio/dropmark v0.0.0-20190403211613-7c40b11a2db1/go.mod h1:khBaA0DNpxFplUHdeG9PzLx3AQdPCxuExla0ckdOf8M=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2 h1:0r9Q05g4aVX+OM3xiXe3K6iBoguVyeDv6P1mQGgGMRM=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2/go.mod h1:ApOjx8MRzEjLcq0nA7kVGZHnv++F3uF7EoOWriQiRfE=
 github.com/lectio/harvester v0.0.0-20190328154655-ed9c25fa9451 h1:hGVbH+CYkIkjX8oZBYVn0LsXKKaWsP1NoetUNZf0lBs=
@@ -122,6 +123,8 @@ github.com/lectio/score v0.0.0-20190403203241-cdd299f5d954 h1:z1z5NiRRaxIt/AyIQK
 github.com/lectio/score v0.0.0-20190403203241-cdd299f5d954/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
 github.com/lectio/score v0.0.0-20190403203617-311f73f178e1 h1:1MQ/ENZlrTmyzicXrnuEQu2Cxu1bx1GERxRqxdGwsQU=
 github.com/lectio/score v0.0.0-20190403203617-311f73f178e1/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
+github.com/lectio/score v0.0.0-20190403213521-412a4cd99941 h1:COM/kJHLHbOjIdv2/QNTJT6WOsvcLDnYzoR1njndo58=
+github.com/lectio/score v0.0.0-20190403213521-412a4cd99941/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
 github.com/magefile/mage v1.8.0 h1:mzL+xIopvPURVBwHG9A50JcjBO+xV3b5iZ7khFRI+5E=
 github.com/magefile/mage v1.8.0/go.mod h1:IUDi13rsHje59lecXokTfGX0QIzO45uVPlXnJYsXepA=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=

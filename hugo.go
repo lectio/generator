@@ -55,7 +55,8 @@ func NewHugoGenerator(collection content.Collection, homePath string, contentID 
 	result.verbose = verbose
 	result.createDestPaths = createDestPaths
 
-	scoresStore, ssErr := score.MakeLinkScoresJSONFileStore(filepath.Join(homePath, "data", contentID+"_scores"), filepath.Join(homePath, "data", contentID+"_scores-errors"), createDestPaths)
+	scoresStore, ssErr := score.MakeLinkScoresJSONFileStore(filepath.Join(homePath, "data", contentID+"_scores"), filepath.Join(homePath, "data", contentID+"_scores-errors"), createDestPaths,
+		score.DefaultValidScoresFileNameFormat, score.DefaultInvalidScoresFileNameFormat)
 	if ssErr != nil {
 		return nil, ssErr
 	}
