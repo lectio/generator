@@ -17,7 +17,8 @@ import (
 
 // HugoGenerator is the primary Hugo content generator engine
 type HugoGenerator struct {
-	collection           content.Collection
+	contentCollection    content.Collection
+	scoresCollection     score.Collection
 	homePath             string
 	contentID            string
 	contentPath          string
@@ -44,9 +45,10 @@ type HugoContent struct {
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
-func NewHugoGenerator(collection content.Collection, homePath string, contentID string, createDestPaths bool, verbose bool, simulateSocialScores bool) (*HugoGenerator, error) {
+func NewHugoGenerator(contentCollection content.Collection, scoresCollection score.Collection, homePath string, contentID string, createDestPaths bool, verbose bool, simulateSocialScores bool) (*HugoGenerator, error) {
 	result := new(HugoGenerator)
-	result.collection = collection
+	result.contentCollection = contentCollection
+	result.scoresCollection = scoresCollection
 	result.homePath = homePath
 	result.contentID = contentID
 	result.contentPath = filepath.Join(homePath, "content", contentID)
@@ -122,32 +124,21 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 	switch v := source.(type) {
 	case content.CuratedContent:
 		resource := v.TargetResource()
-		if resource == nil {
-			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, it has nil TargetResource()", index))
-			return nil
-		}
-		isIgnored, ignoreReason := resource.IsIgnored()
-		if isIgnored {
-			g.errors = append(g.errors, fmt.Errorf("ignoring item %d (%q) in HugoGenerator: %v", index, resource.OriginalURLText(), ignoreReason))
-			return nil
-		}
-		isURLValid, isDestValid := resource.IsValid()
-		if !isURLValid || !isDestValid {
-			g.errors = append(g.errors, fmt.Errorf("skipping item %d due to invalid resource URL %q; isURLValid: %v, isDestValid: %v", index, resource.OriginalURLText(), isURLValid, isDestValid))
-			return nil
-		}
-		finalURL, _, _ := resource.GetURLs()
-		if finalURL == nil || len(finalURL.String()) == 0 {
-			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator, finalURL is nil or empty string", index))
+		finalURL, finalURLErr := link.GetResourceURL(resource)
+		if finalURLErr != nil {
+			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator: %v", index, finalURLErr))
 			return nil
 		}
 		result.Link = finalURL.String()
 		result.Source = link.GetSimplifiedHostname(finalURL)
 		result.Slug = slug.Make(link.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
 		result.GloballyUniqueKey = resource.GloballyUniqueKey()
-
-		scores := score.GetAggregatedLinkScores(finalURL, resource.GloballyUniqueKey(), -1, g.simulateSocialScores)
-		result.SocialScore = scores.AggregateSharesCount
+		scores := g.scoresCollection.ScoredLink(resource.GloballyUniqueKey())
+		if scores != nil {
+			result.SocialScore = scores.AggregateSharesCount
+		} else {
+			g.errors = append(g.errors, fmt.Errorf("unable to find scores for item %d %q in HugoGenerator", index, resource.GloballyUniqueKey()))
+		}
 
 	case content.Content:
 		result.Slug = slug.Make(source.Title().Clean())
@@ -171,7 +162,7 @@ func (g *HugoGenerator) createContentFiles(index int, ch chan<- int, source cont
 
 // GenerateContent executes the engine (creates all the Hugo files from the given collection concurrently)
 func (g *HugoGenerator) GenerateContent() error {
-	items := g.collection.Content()
+	items := g.contentCollection.Content()
 	var bar *pb.ProgressBar
 	if g.verbose {
 		bar = pb.StartNew(len(items))
@@ -189,7 +180,7 @@ func (g *HugoGenerator) GenerateContent() error {
 	}
 
 	if g.verbose {
-		bar.FinishPrint(fmt.Sprintf("Completed generating Hugo items from %q", g.collection.Source()))
+		bar.FinishPrint(fmt.Sprintf("Completed generating Hugo items from %q", g.contentCollection.Source()))
 	}
 
 	return nil

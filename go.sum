@@ -98,6 +98,8 @@ github.com/lectio/harvester v0.0.0-20190330161551-53b737a7e78f h1:ubxNjnHn/O2lSo
 github.com/lectio/harvester v0.0.0-20190330161551-53b737a7e78f/go.mod h1:Aiskmb1dVV/VOzmNBH7Z7cSBo4EaS50DRv75u9Vx/i8=
 github.com/lectio/link v0.0.0-20190404030448-db9bcf71a0e3 h1:BDh8VR7LyrSopIWVNzfnai9QVP7/W4WAShhGEUTeOd4=
 github.com/lectio/link v0.0.0-20190404030448-db9bcf71a0e3/go.mod h1:BXBilTi3I+PtlhcMFP/z81JyCKv1RIPYBqZSkgLEjnQ=
+github.com/lectio/link v0.0.0-20190404162948-74b09536610e h1:zA4VxF0l3tvMVfmr2GXyD+LLDUAnC1QFMvX4Ee4zGkc=
+github.com/lectio/link v0.0.0-20190404162948-74b09536610e/go.mod h1:BXBilTi3I+PtlhcMFP/z81JyCKv1RIPYBqZSkgLEjnQ=
 github.com/lectio/observe v0.0.0-20190330161145-24f6fc031cdd h1:Tj3xxsz9XYOw/BaCE7dYFOlwhMlGYJNu3BH9cPBhsw8=
 github.com/lectio/observe v0.0.0-20190330161145-24f6fc031cdd/go.mod h1:U70gz4MZji5a71zVhxqnnip4ca5Tjwn64Ev9NeqGPmc=
 github.com/lectio/score v0.0.0-20190325172306-57d38b958af9 h1:09u4srHfpyfhNqWsDS0IgpPjxgOc3A8btFOSmInwIaY=
@@ -134,6 +136,8 @@ github.com/lectio/score v0.0.0-20190403214331-a683e9cfb17e h1:a2xsPp2821W2nK5MkW
 github.com/lectio/score v0.0.0-20190403214331-a683e9cfb17e/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
 github.com/lectio/score v0.0.0-20190404024129-64342cf75a65 h1:q1114va3VZ1Qv04ro31jZo0WaNFAsRTg+tUg9adpBDg=
 github.com/lectio/score v0.0.0-20190404024129-64342cf75a65/go.mod h1:z9R7N1qSSyoninqzXmLJutNw+vSstD4vvLU2R2EIN+o=
+github.com/lectio/score v0.0.0-20190404164239-5abceba6ab74 h1:30rWk6TS4Atz8whLf8g+AX01wR/GLPSVVLt+x/Qt3g4=
+github.com/lectio/score v0.0.0-20190404164239-5abceba6ab74/go.mod h1:z9R7N1qSSyoninqzXmLJutNw+vSstD4vvLU2R2EIN+o=
 github.com/magefile/mage v1.8.0 h1:mzL+xIopvPURVBwHG9A50JcjBO+xV3b5iZ7khFRI+5E=
 github.com/magefile/mage v1.8.0/go.mod h1:IUDi13rsHje59lecXokTfGX0QIzO45uVPlXnJYsXepA=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
@@ -183,6 +187,7 @@ golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACk
 golang.org/x/crypto v0.0.0-20190320223903-b7391e95e576/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190403202508-8e1b8d32e692/go.mod h1:WFFai1msRO1wXaEeE5yQxYXgSfI8pQAWXbQop6sCtWE=
+golang.org/x/crypto v0.0.0-20190404164418-38d8ce5564a5/go.mod h1:WFFai1msRO1wXaEeE5yQxYXgSfI8pQAWXbQop6sCtWE=
 golang.org/x/exp v0.0.0-20190125153040-c74c464bbbf2/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190312203227-4b39c73a6495/go.mod h1:ZjyILWgesfNpC6sMxTJOJm9Kp84zZh5NQWvqDGG3Qr8=
@@ -233,6 +238,7 @@ golang.org/x/tools v0.0.0-20190401202758-5bca5db4cb6b/go.mod h1:LCzVGOaR6xXOjkQ3
 golang.org/x/tools v0.0.0-20190401205534-4c644d7e323d/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
 golang.org/x/tools v0.0.0-20190402200628-202502a5a924/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
 golang.org/x/tools v0.0.0-20190403183509-8a44e74612bc/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
+golang.org/x/tools v0.0.0-20190404132500-923d25813098/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
 gonum.org/v1/gonum v0.0.0-20190312223110-e28f136e01a8/go.mod h1:jevfED4GnIEnJrWW55YmY9DMhajHcnkqVnEXmEtMyNI=
 gonum.org/v1/gonum v0.0.0-20190325065607-83576e8213cb h1:BL9xfbLhq74B4UcPFy4+QU45rGhV9lINwuYctFOCU0E=
 gonum.org/v1/gonum v0.0.0-20190325065607-83576e8213cb/go.mod h1:2ltnJ7xHfj0zHS40VVPYEAAMTa3ZGguvHGBSJeRWqE0=
