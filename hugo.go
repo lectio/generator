@@ -9,6 +9,7 @@ import (
 
 	"github.com/gosimple/slug"
 	"github.com/lectio/content"
+	"github.com/lectio/link"
 	"github.com/lectio/score"
 	"gopkg.in/cheggaaa/pb.v1"
 	"gopkg.in/yaml.v2"
@@ -141,8 +142,8 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 			return nil
 		}
 		result.Link = finalURL.String()
-		result.Source = content.GetSimplifiedHostname(finalURL)
-		result.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
+		result.Source = link.GetSimplifiedHostname(finalURL)
+		result.Slug = slug.Make(link.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
 		result.GloballyUniqueKey = resource.GloballyUniqueKey()
 
 		scores := score.GetAggregatedLinkScores(finalURL, resource.GloballyUniqueKey(), -1, g.simulateSocialScores)

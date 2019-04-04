@@ -62,6 +62,8 @@ github.com/lectio/content v0.0.0-20190402141924-37bab0efbc22 h1:Btk57Qo1cLzpUHkb
 github.com/lectio/content v0.0.0-20190402141924-37bab0efbc22/go.mod h1:aPMZ7JR+EIgvec7oRye57holXME8JWkxhLEzJzxe72o=
 github.com/lectio/content v0.0.0-20190403210446-5a8744305359 h1:aejaY5vTaNx/Rlgl0MrwlI5gsf+jN5JrfRMoYyqiBVE=
 github.com/lectio/content v0.0.0-20190403210446-5a8744305359/go.mod h1:X4Dd6SCiqAoABx5UNyS/6Y3gwk1dDqP9dR/o4x2nmUY=
+github.com/lectio/content v0.0.0-20190404030805-9edf4c8b0416 h1:kzaMjO/smkjJtsaBZFw6pxCNTh/XRBIkwvjuOQRC+E4=
+github.com/lectio/content v0.0.0-20190404030805-9edf4c8b0416/go.mod h1:hpZAAfoba9a77jk7ItuLwqbDNN9E8BYB5x/N1MbZCcw=
 github.com/lectio/dropmark v0.0.0-20190321182402-d14de213f43f h1:qTKZTQOskQewfSM1vOuv9m+xaBoZ02TGdhaIrXs+74g=
 github.com/lectio/dropmark v0.0.0-20190321182402-d14de213f43f/go.mod h1:20Npxv5qWcLu+5XsM5mnsgCPUxxtcy3LfOs4Z2ByWQs=
 github.com/lectio/dropmark v0.0.0-20190325175313-7c3a941be466 h1:qo/GiROqSiYTSfKAM1xdh3RqvlCq+IoPP5hS4clC5tM=
@@ -87,12 +89,15 @@ github.com/lectio/dropmark v0.0.0-20190402142148-96698eba8d79/go.mod h1:IoeR7yHL
 github.com/lectio/dropmark v0.0.0-20190403140919-001230fff3a9/go.mod h1:RMhZaSpRAuf49fFHDtLlWWbKyLGbbYYajxiB4bWlfCk=
 github.com/lectio/dropmark v0.0.0-20190403210555-507802c254d4/go.mod h1:khBaA0DNpxFplUHdeG9PzLx3AQdPCxuExla0ckdOf8M=
 github.com/lectio/dropmark v0.0.0-20190403211613-7c40b11a2db1/go.mod h1:khBaA0DNpxFplUHdeG9PzLx3AQdPCxuExla0ckdOf8M=
+github.com/lectio/dropmark v0.0.0-20190404031056-627771a0e230/go.mod h1:fnwKraA5gNn7MBaiRX7bpMwqVFY/FNg3sYN3n/MpsAI=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2 h1:0r9Q05g4aVX+OM3xiXe3K6iBoguVyeDv6P1mQGgGMRM=
 github.com/lectio/harvester v0.0.0-20190325024938-d83e2e4eacd2/go.mod h1:ApOjx8MRzEjLcq0nA7kVGZHnv++F3uF7EoOWriQiRfE=
 github.com/lectio/harvester v0.0.0-20190328154655-ed9c25fa9451 h1:hGVbH+CYkIkjX8oZBYVn0LsXKKaWsP1NoetUNZf0lBs=
 github.com/lectio/harvester v0.0.0-20190328154655-ed9c25fa9451/go.mod h1:yKHFV+hr0MIDD+nVqZsgoT/sqskUNRPchNtjg1oVj1Y=
 github.com/lectio/harvester v0.0.0-20190330161551-53b737a7e78f h1:ubxNjnHn/O2lSoF1NB3SFKQei8JuQMIHfAyZwKwUorE=
 github.com/lectio/harvester v0.0.0-20190330161551-53b737a7e78f/go.mod h1:Aiskmb1dVV/VOzmNBH7Z7cSBo4EaS50DRv75u9Vx/i8=
+github.com/lectio/link v0.0.0-20190404030448-db9bcf71a0e3 h1:BDh8VR7LyrSopIWVNzfnai9QVP7/W4WAShhGEUTeOd4=
+github.com/lectio/link v0.0.0-20190404030448-db9bcf71a0e3/go.mod h1:BXBilTi3I+PtlhcMFP/z81JyCKv1RIPYBqZSkgLEjnQ=
 github.com/lectio/observe v0.0.0-20190330161145-24f6fc031cdd h1:Tj3xxsz9XYOw/BaCE7dYFOlwhMlGYJNu3BH9cPBhsw8=
 github.com/lectio/observe v0.0.0-20190330161145-24f6fc031cdd/go.mod h1:U70gz4MZji5a71zVhxqnnip4ca5Tjwn64Ev9NeqGPmc=
 github.com/lectio/score v0.0.0-20190325172306-57d38b958af9 h1:09u4srHfpyfhNqWsDS0IgpPjxgOc3A8btFOSmInwIaY=
@@ -127,6 +132,8 @@ github.com/lectio/score v0.0.0-20190403213521-412a4cd99941 h1:COM/kJHLHbOjIdv2/Q
 github.com/lectio/score v0.0.0-20190403213521-412a4cd99941/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
 github.com/lectio/score v0.0.0-20190403214331-a683e9cfb17e h1:a2xsPp2821W2nK5MkW421L7TvRtVVobof7Djk/Y+NIE=
 github.com/lectio/score v0.0.0-20190403214331-a683e9cfb17e/go.mod h1:xf+tXNhzRdOTcAxFi5Eo+midqCvzmfqIlss/VJ3tg24=
+github.com/lectio/score v0.0.0-20190404024129-64342cf75a65 h1:q1114va3VZ1Qv04ro31jZo0WaNFAsRTg+tUg9adpBDg=
+github.com/lectio/score v0.0.0-20190404024129-64342cf75a65/go.mod h1:z9R7N1qSSyoninqzXmLJutNw+vSstD4vvLU2R2EIN+o=
 github.com/magefile/mage v1.8.0 h1:mzL+xIopvPURVBwHG9A50JcjBO+xV3b5iZ7khFRI+5E=
 github.com/magefile/mage v1.8.0/go.mod h1:IUDi13rsHje59lecXokTfGX0QIzO45uVPlXnJYsXepA=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
