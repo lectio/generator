@@ -20,7 +20,6 @@ type HugoGenerator struct {
 	homePath             string
 	contentID            string
 	contentPath          string
-	scoresStore          score.LinkScoresStore
 	simulateSocialScores bool
 	verbose              bool
 	createDestPaths      bool
@@ -39,9 +38,8 @@ type HugoContent struct {
 	Source            string   `json:"source" yaml:"source,omitempty"`
 	Slug              string   `json:"slug" yaml:"slug"`
 	GloballyUniqueKey string   `json:"uniquekey" yaml:"uniquekey"`
+	SocialScore       int      `json:"socialScore" yaml:"socialScore"`
 	EditorURL         string   `json:"editorURL,omitempty" yaml:"editorURL,omitempty"`
-
-	scores *score.AggregatedLinkScores
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
@@ -54,13 +52,6 @@ func NewHugoGenerator(collection content.Collection, homePath string, contentID 
 	result.simulateSocialScores = simulateSocialScores
 	result.verbose = verbose
 	result.createDestPaths = createDestPaths
-
-	scoresStore, ssErr := score.MakeLinkScoresJSONFileStore(filepath.Join(homePath, "data", contentID+"_scores"), filepath.Join(homePath, "data", contentID+"_scores-errors"), createDestPaths,
-		score.DefaultValidScoresFileNameFormat, score.DefaultInvalidScoresFileNameFormat)
-	if ssErr != nil {
-		return nil, ssErr
-	}
-	result.scoresStore = scoresStore
 
 	if createDestPaths {
 		if _, err := createDirIfNotExist(result.contentPath); err != nil {
@@ -153,7 +144,9 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Source = content.GetSimplifiedHostname(finalURL)
 		result.Slug = slug.Make(content.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
 		result.GloballyUniqueKey = resource.GloballyUniqueKey()
-		result.scores = score.GetAggregatedLinkScores(finalURL, resource.GloballyUniqueKey(), -1, g.simulateSocialScores)
+
+		scores := score.GetAggregatedLinkScores(finalURL, resource.GloballyUniqueKey(), -1, g.simulateSocialScores)
+		result.SocialScore = scores.AggregateSharesCount
 
 	case content.Content:
 		result.Slug = slug.Make(source.Title().Clean())
@@ -170,10 +163,6 @@ func (g *HugoGenerator) createContentFiles(index int, ch chan<- int, source cont
 		_, err := hugoContent.createContentFile(g)
 		if err != nil {
 			g.errors = append(g.errors, fmt.Errorf("error writing HugoContent item %d in HugoGenerator: %+v", index, err))
-		}
-		g.scoresStore.Write(hugoContent.scores)
-		for _, scorer := range hugoContent.scores.Scores {
-			g.scoresStore.Write(scorer)
 		}
 	}
 	ch <- index
