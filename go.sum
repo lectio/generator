@@ -75,6 +75,8 @@ github.com/lectio/content v0.0.0-20190406220637-3234f6168266 h1:ZO5jfbC1JRCLamX3
 github.com/lectio/content v0.0.0-20190406220637-3234f6168266/go.mod h1:Vys+AfwxL70BepDi60Y1eNf+cBjjbRggeMqV+cy0K8I=
 github.com/lectio/content v0.0.0-20190406221455-05b3dce051d5 h1:9bU43LBYKOUuiN8aNKast0SXJjV/GvXdieXn2U010so=
 github.com/lectio/content v0.0.0-20190406221455-05b3dce051d5/go.mod h1:Vys+AfwxL70BepDi60Y1eNf+cBjjbRggeMqV+cy0K8I=
+github.com/lectio/content v0.0.0-20190406224309-9e3bf46c50d1 h1:zo1CsUWBKs0E7PdaMR/3dRVrevu1kZaSPFB7m5/AxfI=
+github.com/lectio/content v0.0.0-20190406224309-9e3bf46c50d1/go.mod h1:Vys+AfwxL70BepDi60Y1eNf+cBjjbRggeMqV+cy0K8I=
 github.com/lectio/dropmark v0.0.0-20190321182402-d14de213f43f h1:qTKZTQOskQewfSM1vOuv9m+xaBoZ02TGdhaIrXs+74g=
 github.com/lectio/dropmark v0.0.0-20190321182402-d14de213f43f/go.mod h1:20Npxv5qWcLu+5XsM5mnsgCPUxxtcy3LfOs4Z2ByWQs=
 github.com/lectio/dropmark v0.0.0-20190325175313-7c3a941be466 h1:qo/GiROqSiYTSfKAM1xdh3RqvlCq+IoPP5hS4clC5tM=
@@ -104,6 +106,7 @@ github.com/lectio/dropmark v0.0.0-20190404031056-627771a0e230/go.mod h1:fnwKraA5
 github.com/lectio/dropmark v0.0.0-20190406192530-8ce88a4c7a06/go.mod h1:RkthiIA+wcV0NpGgwLD1y+fcz2ywtHsrZZAcyAxffDs=
 github.com/lectio/dropmark v0.0.0-20190406193645-eebbe1d950ad/go.mod h1:BIlyuGqEvOKMphJoU0Fibe7YcKBFYQLDvuog3ZICLf0=
 github.com/lectio/dropmark v0.0.0-20190406215942-7a2ab881b6cd/go.mod h1:N/v7SPGr2G2tdUAkiKRvSjsv6gvM37+7QftSN00fwTg=
+github.com/lectio/dropmark v0.0.0-20190406224539-b1f478aedf5e/go.mod h1:f4KxnQC1FnKBbMlYiYQxutb00u8yZkl8IGOF81R0u0U=
 github.com/lectio/flexmap v0.0.0-20190406181817-9acd03bc3313/go.mod h1:kZu10qSo5aEjCxvTS4+fVHlirwTvQ9vp+shAp282bWQ=
 github.com/lectio/flexmap v0.0.0-20190406192317-f27bf6e83979 h1:ZUWlERnDv3TcLYod2tf0sGRxN/xCcLGETtGeCASfDSE=
 github.com/lectio/flexmap v0.0.0-20190406192317-f27bf6e83979/go.mod h1:kZu10qSo5aEjCxvTS4+fVHlirwTvQ9vp+shAp282bWQ=

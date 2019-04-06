@@ -175,7 +175,11 @@ func (g *HugoGenerator) createContentFiles(index int, ch chan<- int, source cont
 
 // GenerateContent executes the engine (creates all the Hugo files from the given collection concurrently)
 func (g *HugoGenerator) GenerateContent() error {
-	items := g.contentCollection.Content()
+	items, ccErr := g.contentCollection.Content()
+	if ccErr != nil {
+		return ccErr
+	}
+
 	var bar *pb.ProgressBar
 	if g.verbose {
 		bar = pb.StartNew(len(items))
