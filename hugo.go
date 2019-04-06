@@ -89,11 +89,12 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Title = source.Title().Clean()
 	}
 
-	bodyFrontMatterDescr, ok, _ := source.Body().FrontMatterValue("description")
+	bodyFrontMatterDescr, ok, descrErr := source.Body().FrontMatter().TextKeyTextValue("description")
 	if ok {
-		switch bodyFrontMatterDescr.(type) {
-		case string:
-			result.Summary = bodyFrontMatterDescr.(string)
+		if descrErr != nil {
+			g.errors = append(g.errors, fmt.Errorf("error getting description for item %d: %v", index, descrErr))
+		} else {
+			result.Summary = bodyFrontMatterDescr
 		}
 	}
 	if len(result.Summary) == 0 {
@@ -114,8 +115,14 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 	result.Categories = source.Categories()
 	result.CreatedOn = time.Time(source.CreatedOn()).Format("Mon Jan 2 15:04:05 MST 2006")
 
-	editorURL, _, _ := source.Directive("editorURL")
-	result.EditorURL = editorURL.(string)
+	editorURL, ok, eurlErr := source.Directives().MapValue("editorURL")
+	if ok {
+		if eurlErr != nil {
+			g.errors = append(g.errors, fmt.Errorf("error getting editorURL directive for item %d: %v", index, eurlErr))
+		} else {
+			result.EditorURL = editorURL.(string)
+		}
+	}
 
 	if source.FeaturedImage() != nil {
 		result.FeaturedImage = source.FeaturedImage().String()
