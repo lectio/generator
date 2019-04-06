@@ -89,12 +89,14 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Title = source.Title().Clean()
 	}
 
-	bodyFrontMatterDescr, ok, descrErr := source.Body().FrontMatter().TextKeyTextValue("description")
-	if ok {
-		if descrErr != nil {
-			g.errors = append(g.errors, fmt.Errorf("error getting description for item %d: %v", index, descrErr))
-		} else {
-			result.Summary = bodyFrontMatterDescr
+	if source.Body().HasFrontMatter() {
+		bodyFrontMatterDescr, ok, descrErr := source.Body().FrontMatter().TextKeyTextValue("description")
+		if ok {
+			if descrErr != nil {
+				g.errors = append(g.errors, fmt.Errorf("error getting description for item %d: %v", index, descrErr))
+			} else {
+				result.Summary = bodyFrontMatterDescr
+			}
 		}
 	}
 	if len(result.Summary) == 0 {
