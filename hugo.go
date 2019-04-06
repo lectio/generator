@@ -132,8 +132,12 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 
 	switch v := source.(type) {
 	case content.CuratedContent:
-		resource := v.TargetResource()
-		finalURL, finalURLErr := link.GetResourceURL(resource)
+		curatedLink := v.Link()
+		if curatedLink == nil {
+			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator: v.Link() is nil", index))
+			return nil
+		}
+		finalURL, finalURLErr := curatedLink.FinalURL()
 		if finalURLErr != nil {
 			g.errors = append(g.errors, fmt.Errorf("skipping item %d in HugoGenerator: %v", index, finalURLErr))
 			return nil
@@ -141,12 +145,12 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		result.Link = finalURL.String()
 		result.Source = link.GetSimplifiedHostname(finalURL)
 		result.Slug = slug.Make(link.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
-		result.GloballyUniqueKey = resource.GloballyUniqueKey()
-		scores := g.scoresCollection.ScoredLink(resource.GloballyUniqueKey())
+		result.GloballyUniqueKey = curatedLink.GloballyUniqueKey()
+		scores := g.scoresCollection.ScoredLink(curatedLink.GloballyUniqueKey())
 		if scores != nil {
 			result.SocialScore = scores.AggregateSharesCount
 		} else {
-			g.errors = append(g.errors, fmt.Errorf("unable to find scores for item %d %q in HugoGenerator", index, resource.GloballyUniqueKey()))
+			g.errors = append(g.errors, fmt.Errorf("unable to find scores for item %d %q in HugoGenerator", index, curatedLink.GloballyUniqueKey()))
 		}
 
 	case content.Content:
