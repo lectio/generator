@@ -34,7 +34,6 @@ type HugoGenerator struct {
 	contentID            string
 	contentPath          string
 	simulateSocialScores bool
-	verbose              bool
 	createDestPaths      bool
 	errors               []error
 }
@@ -200,12 +199,12 @@ func (g *HugoGenerator) GenerateContent() error {
 	}
 	for i := 0; i < len(items); i++ {
 		_ = <-ch
-		if g.verbose {
+		if g.pr != nil && g.pr.IsProgressReportingRequested() {
 			g.pr.IncrementReportableActivityProgress()
 		}
 	}
 
-	if g.verbose {
+	if g.pr != nil && g.pr.IsProgressReportingRequested() {
 		g.pr.CompleteReportableActivityProgress(fmt.Sprintf("Completed generating Hugo items from %q", g.contentCollection.Source()))
 	}
 
