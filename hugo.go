@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -11,14 +12,24 @@ import (
 	"github.com/lectio/content"
 	"github.com/lectio/link"
 	"github.com/lectio/score"
-	"gopkg.in/cheggaaa/pb.v1"
 	"gopkg.in/yaml.v2"
 )
+
+// ProgressReporter is sent to this package's methods if activity progress reporting is expected
+type ProgressReporter interface {
+	IsProgressReportingRequested() bool
+	StartReportableActivity(expectedItems int)
+	StartReportableReaderActivityInBytes(exepectedBytes int64, inputReader io.Reader) io.Reader
+	IncrementReportableActivityProgress()
+	IncrementReportableActivityProgressBy(incrementBy int)
+	CompleteReportableActivityProgress(summary string)
+}
 
 // HugoGenerator is the primary Hugo content generator engine
 type HugoGenerator struct {
 	contentCollection    content.Collection
 	scoresCollection     score.Collection
+	pr                   ProgressReporter
 	homePath             string
 	contentID            string
 	contentPath          string
@@ -45,7 +56,7 @@ type HugoContent struct {
 }
 
 // NewHugoGenerator creates the default Hugo generation engine
-func NewHugoGenerator(contentCollection content.Collection, scoresCollection score.Collection, homePath string, contentID string, createDestPaths bool, verbose bool, simulateSocialScores bool) (*HugoGenerator, error) {
+func NewHugoGenerator(contentCollection content.Collection, scoresCollection score.Collection, homePath string, contentID string, createDestPaths bool, pr ProgressReporter, simulateSocialScores bool) (*HugoGenerator, error) {
 	result := new(HugoGenerator)
 	result.contentCollection = contentCollection
 	result.scoresCollection = scoresCollection
@@ -53,8 +64,8 @@ func NewHugoGenerator(contentCollection content.Collection, scoresCollection sco
 	result.contentID = contentID
 	result.contentPath = filepath.Join(homePath, "content", contentID)
 	result.simulateSocialScores = simulateSocialScores
-	result.verbose = verbose
 	result.createDestPaths = createDestPaths
+	result.pr = pr
 
 	if createDestPaths {
 		if _, err := createDirIfNotExist(result.contentPath); err != nil {
@@ -180,10 +191,8 @@ func (g *HugoGenerator) GenerateContent() error {
 		return ccErr
 	}
 
-	var bar *pb.ProgressBar
-	if g.verbose {
-		bar = pb.StartNew(len(items))
-		bar.ShowCounters = true
+	if g.pr != nil && g.pr.IsProgressReportingRequested() {
+		g.pr.StartReportableActivity(len(items))
 	}
 	ch := make(chan int)
 	for i, source := range items {
@@ -192,12 +201,12 @@ func (g *HugoGenerator) GenerateContent() error {
 	for i := 0; i < len(items); i++ {
 		_ = <-ch
 		if g.verbose {
-			bar.Increment()
+			g.pr.IncrementReportableActivityProgress()
 		}
 	}
 
 	if g.verbose {
-		bar.FinishPrint(fmt.Sprintf("Completed generating Hugo items from %q", g.contentCollection.Source()))
+		g.pr.CompleteReportableActivityProgress(fmt.Sprintf("Completed generating Hugo items from %q", g.contentCollection.Source()))
 	}
 
 	return nil
