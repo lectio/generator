@@ -92,11 +92,11 @@ func (g HugoGenerator) GetContentFilename(gc *HugoContent) string {
 func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Content) *HugoContent {
 	result := new(HugoContent)
 
-	ogTitle, ok := source.Title().OpenGraphTitle(true)
+	ogTitle, ok := source.OpenGraphContent("title", nil)
 	if ok {
 		result.Title = ogTitle
 	} else {
-		result.Title = source.Title().Clean()
+		result.Title = source.Title()
 	}
 
 	if source.Body().HasFrontMatter() {
@@ -110,7 +110,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		}
 	}
 	if len(result.Summary) == 0 {
-		ogDescr, ok := source.Summary().OpenGraphDescription()
+		ogDescr, ok := source.OpenGraphContent("description", nil)
 		if ok {
 			result.Summary = ogDescr
 		} else {
@@ -118,7 +118,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 			if fsErr == nil {
 				result.Summary = firstSentence
 			} else {
-				result.Summary = source.Summary().Original()
+				result.Summary = source.Summary()
 			}
 		}
 	}
@@ -154,7 +154,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		}
 		result.Link = finalURL.String()
 		result.Source = link.GetSimplifiedHostname(finalURL)
-		result.Slug = slug.Make(link.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title().Clean())
+		result.Slug = slug.Make(link.GetSimplifiedHostnameWithoutTLD(finalURL) + "-" + source.Title())
 		result.GloballyUniqueKey = curatedLink.GloballyUniqueKey()
 		scores := g.scoresCollection.ScoredLink(curatedLink.GloballyUniqueKey())
 		if scores != nil {
@@ -164,7 +164,7 @@ func (g *HugoGenerator) makeHugoContentFromSource(index int, source content.Cont
 		}
 
 	case content.Content:
-		result.Slug = slug.Make(source.Title().Clean())
+		result.Slug = slug.Make(source.Title())
 	default:
 		fmt.Printf("I don't know about type %T!\n", v)
 	}
